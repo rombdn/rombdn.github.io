@@ -1,0 +1,105 @@
+---
+layout: post
+title: ! 'HTML5 Canvas / Javascript / Box2D : a little game'
+tags:
+- box2d
+- canvas
+- Development
+- dog
+- html5
+- javascript
+- sled
+status: publish
+type: post
+published: true
+meta:
+  _publicize_pending: '1'
+  _edit_last: '9835614'
+  jabber_published: '1355757334'
+  original_post_id: '3'
+  _wp_old_slug: '3'
+---
+Here is a little game I made (for a some friends) while playing around with HTML5 canvas and <a href="http://box2d.org/" target="_blank">Box2D</a> :
+
+<strong><a title="doggy sledding" href="http://www.wajrak.com/" target="_blank">Dog Sled</a></strong> (<a href="https://github.com/rombdn/dogsled">github</a>)
+
+I have planned to refactor the code because it is dirty, not robust and not maintenable (hacked it while learning box2d).
+
+I think some parts could help as real situation exemples of how to use box2d in javascript and how to add graphics in front of box2d... or as a good compilation of bad practices (hehe). All the game code and logic is in index.html ;)
+
+Some explanations :
+
+<em>Initialisations</em>
+
+[sourcecode language="javascript"]
+//...
+dog_initcanvas();
+dog_initsound();
+dog_events(); //mouse and keyboard
+dog_initworld();
+dog_setupcollisions();
+dog_initdraw();
+dog_update();
+//...
+[/sourcecode]
+
+<em>Collisions</em>
+
+[sourcecode language="javascript"]
+//...
+function dog_setupcollisions()
+{
+   var listener = new Box2D.Dynamics.b2ContactListener;
+   listener.BeginContact = function(contact) {
+      //if the dog touch the line we add a flag
+      //...
+   listener.PreSolve = function(contact) {
+      //if the dog eats a bone there's no collision
+      //...
+   listener.PostSolve = function(contact, impulse) {
+      //if the dog touch his house
+      //and sounds...
+      //...
+[/sourcecode]
+
+<em>Main loop</em>
+
+[sourcecode language="javascript"]
+//...
+function dog_update()
+{
+	window.requestAnimationFrame(dog_update);
+
+	world.Step(
+		1 / 60,	//frame-rate
+		10,		//velocity iterations
+		10		//position iterations
+	);
+
+	world.ClearForces();
+	canvas_draw(); //graphics
+}
+//...
+function canvas_draw()
+//...
+//we iterate through all the bodies
+for(body = world.GetBodyList(); body; body = body.GetNext()) {
+   //...
+   //we use the User Data field to know what to draw
+	switch(body.GetUserData()) {
+		case &quot;line&quot;:
+//...
+[/sourcecode]
+
+<em>More to come...</em>
+
+I used <a href="http://code.google.com/p/box2dweb/">box2dweb</a>, a javascript port of box2d 2.1. It lacks features like rope joint but I realized it too late... There are more up to date ports i didn't try like these ones : <a href="http://code.google.com/p/box2d-html5/">box2d-html5</a> or <a href="https://github.com/kripken/box2d.js">kripken's box2djs</a>
+
+Have fun!
+
+<em>
+I followed these tutorials <a href="http://blog.sethladd.com/search/label/box2d">blog.sethladd.com</a></em>
+<em>I do not own most of the graphics</em>
+
+
+<p style="text-align:right;"><a href="https://plus.google.com/112678424699484797019" rel="author">Romain</a></p>

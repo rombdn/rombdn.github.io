@@ -1,0 +1,47 @@
+---
+layout: post
+title: ! 'Performance analysis : Impact of resource saturation on response time illustrated'
+tags:
+- analysis
+- cpu
+- engineering
+- linux
+- performance
+- Performance
+- resource
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '9835614'
+  _publicize_pending: '1'
+  jabber_published: '1364508986'
+---
+When investigating performance problems, checking saturation is usually a good start : by definition, any saturation is a bottleneck because it means queueing.
+
+While in batch processing saturation is not a always a problem (e.g when queueing jobs), this is usually not the case for a end user / online transaction where any saturation will probably impact response time. In practice this is usually a very bad situation because it means that the number of requests from clients is greater than the system processing capacity, which can rapidly leads to timeouts for clients...
+
+Saturation may appear at different levels :
+<ul>
+	<li><span style="line-height:13px;">Physical : CPU (Runqueue), I/O (response time, queue), Memory (swapping). You can find a pretty exhaustive list here : <a title="USE Method : Linux Performance Checklist" href="http://dtrace.org/blogs/brendan/2012/03/07/the-use-method-linux-performance-checklist/" target="_blank">The USE Method: Linux Performance Checklist</a>
+</span></li>
+	<li>Software : Application servers message queue length</li>
+</ul>
+Now let's compare utilization and saturation in a very general case of online transactions. I made these graphs - of a very general situation I admit - to illustrate theses points. The system is supposed to be single core. (Note : I represented runqueue = 2 as the normal situation : one thread can run on CPU and the other can wait for memory or I/O, the rule of thumb is Runqueue should be &lt;= available cores).
+
+Transaction response time :
+<a href="http://rombdn.files.wordpress.com/2013/03/resptime1.png"><img alt="RespTime" src="http://rombdn.files.wordpress.com/2013/03/resptime1.png?w=300" width="300" height="143" /></a>
+
+CPU Utilization :
+<a href="http://rombdn.files.wordpress.com/2013/03/cpupercent.png"><img class="alignnone size-medium wp-image-57" alt="CPUpercent" src="http://rombdn.files.wordpress.com/2013/03/cpupercent.png?w=300" width="300" height="142" /></a>
+
+RunQueue :
+<a href="http://rombdn.files.wordpress.com/2013/03/cpurunqueue2.png"><img class="alignnone size-medium wp-image-61" alt="CPUrunqueue" src="http://rombdn.files.wordpress.com/2013/03/cpurunqueue2.png?w=300" width="300" height="141" /></a>
+
+Okay it's not very realistic but it can help to illustrate some empirical observations :
+<ul>
+	<li>Transaction response time is not (strongly) correlated with physical resources utilization, contrary to saturation (runqueue).</li>
+	<li>The system can generally handle some saturation ( 3 &lt; runqueue &lt; 5) but after a certain threshold response time will rapidly degrade.</li>
+</ul>
+Good analysis!
+<p style="text-align:right;"><a href="https://plus.google.com/112678424699484797019" rel="author">Romain</a></p>

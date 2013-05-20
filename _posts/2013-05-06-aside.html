@@ -1,0 +1,45 @@
+---
+layout: post
+title: Aside
+tags: []
+status: draft
+type: post
+published: false
+meta:
+  _edit_last: '9835614'
+---
+[sourcecode language="javascript"]
+&lt;html&gt;
+&lt;body&gt;
+	&lt;script src=&quot;jquery.js&quot;&gt;&lt;/script&gt;
+	&lt;script src=&quot;underscore.js&quot;&gt;&lt;/script&gt;
+	&lt;script src=&quot;backbone.js&quot;&gt;&lt;/script&gt;
+	&lt;script src=&quot;zombieViews.js&quot;&gt;&lt;/script&gt;
+
+	&lt;div id=&quot;content&quot;&gt;&lt;/div&gt;
+
+	&lt;script&gt;
+
+		var ZombieView = Backbone.View.extend({
+		    initialize: function() {
+		        Backbone.on('dummyEvent', this.sayFoo);
+		    },
+
+		    sayFoo: function() {
+		    	console.log('foo');
+		    }
+		});
+
+		var view;
+
+	    for(var i = 0; i&lt;1000; ++i) {
+        	view = new ZombieView();
+        	view.remove();
+    	}
+
+    	Backbone.trigger('dummyEvent');
+
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+[/sourcecode]
