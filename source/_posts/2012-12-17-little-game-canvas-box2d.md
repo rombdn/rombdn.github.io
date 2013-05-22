@@ -6,13 +6,17 @@ comments: true
 categories: 
 ---
 
-Here is a little game I made for a friend while playing around with HTML5 Canvas and [Box2D](http://box2d.org) :
+Here is a little game I made for a friend while playing around with HTML5 Canvas, Javascript and [Box2D](http://box2d.org) :
 
-**[Dog Sled](http://www.wajrak.com)**, [source](https://github.com/rombdn/dogsled)
+**[Dog Sled](http://www.wajrak.com)** - [source](https://github.com/rombdn/dogsled)
 
-I have planned to do some refactor because the code is very hacky.
 
-Despise that I think that some parts could help as real world examples of Box2D usage in javascript, and how to add graphics in front of box2d... All the game code and logic is in index.html (hem... ;) )
+{% img /images/dogsled/dogsled.jpg %}
+
+
+I have planned to do some refactor because the code is very hacky and it currently runs only in WebKit.
+
+Despise that I think that some parts could help as real world examples of Box2D usage in javascript, and how to add graphics in front of Box2D... All the game code and logic is in index.html (hem... ;) )
 
 
 Code highlights

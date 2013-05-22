@@ -10,8 +10,6 @@ categories:
 Intro
 ---------
 
-In this article I will show how to use the the Heap Profiler in Chrome to troubleshoot memory leaks in Backbone applications. 
-
 The Heap Profiler in Chrome is a powerful tool to analyze memory usage in web applications. Here are some useful links :
 
 - [Memory Analysis 101](https://developers.google.com/chrome-developer-tools/docs/memory-analysis-101)
@@ -79,7 +77,7 @@ Why the views aren't removed ?
 Troobleshoot
 ----------------
 
-If take a heap snapshot we can see that the greetingEvent is in the retaining path of the views. This path prevent the GC to dispose the object.
+If we take a heap snapshot we can see that the greetingEvent is in the retaining path of the views. This path prevent the GC to dispose the object.
 
 {% img /images/backbonemem/retainingpath.png %}
 

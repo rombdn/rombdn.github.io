@@ -14,9 +14,10 @@ While in batch processing saturation is usually not a problem (except when throu
 
 Saturation may appear at different levels, for example :
 
-- System level : CPU (Runqueue), I/O (response time, queue), Memory (swap)... You can find a good list here : [Linux Performance Checklist](http://dtrace.org/blogs/brendan/2012/03/07/the-use-method-linux-performance-checklist/)
-
+- System level : CPU (Runqueue), I/O (response time, queue), Memory (swap)... 
 - Application level : Application servers messages queue, connections pools...
+
+An exhaustive list can be found here : [Linux Performance Checklist](http://dtrace.org/blogs/brendan/2012/03/07/the-use-method-linux-performance-checklist/)
 
 
 Utilization vs Saturation
@@ -26,17 +27,17 @@ To illustrate the differences between utilization and saturation I made these gr
 
 Transaction response time :
 
-![alt text](http://rombdn.files.wordpress.com/2013/03/resptime1.png "Response Time")
+![alt text](/images/runqueue/resptime1.png "Response Time")
 
 
 CPU Utilization :
 
-![alt text](http://rombdn.files.wordpress.com/2013/03/cpupercent.png "CPU Utilization")
+![alt text](/images/runqueue/cpupercent.png "CPU Utilization")
 
 
 RunQueue :
 
-![alt text](http://rombdn.files.wordpress.com/2013/03/cpurunqueue2.png "Runqueue")
+![alt text](/images/runqueue/cpurunqueue2.png "Runqueue")
 
 
 Not very realistic ;), but it shows some empirical observations :
