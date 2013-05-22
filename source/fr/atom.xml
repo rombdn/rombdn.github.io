@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Romain Beaudon]]></title>
+  <link href="http://rombdn.com/fr/atom.xml" rel="self"/>
+  <link href="http://rombdn.com/fr/"/>
+  <updated>2013-05-22T18:46:13+02:00</updated>
+  <id>http://rombdn.com/fr/</id>
+  <author>
+    <name><![CDATA[Romain Beaudon]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome]]></title>
+    <link href="http://rombdn.com/fr/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/"/>
+    <updated>2013-05-21T16:15:00+02:00</updated>
+    <id>http://rombdn.com/fr/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler</id>
+    <content type="html"><![CDATA[<p><em>Note: ce post reprend l&#8217;idée du nommage des constructeurs utilisé dans la librairie <a href="https://github.com/onsi/coccyx">Coccyx</a></em></p>
+
+<p>Dans <a href="http://rombdn.com/fr/blog/2013/05/21/backbone-memory-leaks-with-chrome-heap-profiler/">ce post</a> j&#8217;ai donné un example de fuite mémoire avec Backbone, ainsi que comment l&#8217;analyser avec le Heap Profiler de Chrome. Pour rappel voici le code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sayFoo</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">sayFoo</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZombieView</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">view</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Backbone</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://rombdn.com/fr/images/backbonemem/child.png"></p>
+
+<p>Cependant l&#8217;identification des vues en question est difficile car les objets étendus depuis un Model ou une View Backbone ont leur Constructeur renommé <code>child</code>.</p>
+
+<p><img src="http://rombdn.com/fr/images/backbonemem/childpath.png"></p>
+
+<p>Une solution à ce problème serait donc de pouvoir nommer les constructeurs de nos objets. Voici un petit hack permettant de faire cela :</p>
+
+<p>Dans le fichier backbone.js, aux alentours de la ligne 1541 :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// The constructor function for the new subclass is either defined by you</span>
+</span><span class='line'><span class="c1">// (the &quot;constructor&quot; property in your `extend` definition), or defaulted</span>
+</span><span class='line'><span class="c1">// by us to simply call the parent&#39;s constructor.</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">protoProps</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructor&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il suffit simplement d&#8217;ajouter un cas pour le nommage du constructeur :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">protoProps</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructor&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructorName&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;child = function &quot;</span> <span class="o">+</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructorName</span> <span class="o">+</span> <span class="s2">&quot;() { return parent.apply(this, arguments); };&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Note: à cause de l&#8217;utilisation de <code>eval</code> ce code ne devrait pas être utilisé en production&hellip;</em></p>
+
+<p>Nous avons maintenant la possibilité d&#8217;ajouter une variable à nos models et views.</p>
+
+<h3>Example la vue précédente</h3>
+
+<p>Ajout d&#8217;un nom pour le Constructeur :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">constructorName</span><span class="o">:</span> <span class="s1">&#39;Zombie&#39;</span><span class="p">,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Les vues sont maintenant correctement identifiables dans le Heap Profiler :</p>
+
+<p><img src="http://rombdn.com/fr/images/backbonemem/zombie.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Backbone Memory leaks with Chrome Heap Profiler]]></title>
+    <link href="http://rombdn.com/fr/blog/2013/05/21/backbone-memory-leaks-with-chrome-heap-profiler/"/>
+    <updated>2013-05-21T15:53:00+02:00</updated>
+    <id>http://rombdn.com/fr/blog/2013/05/21/backbone-memory-leaks-with-chrome-heap-profiler</id>
+    <content type="html"><![CDATA[<h2>Intro</h2>
+
+<p>The Heap Profiler in Chrome is a powerful tool to analyze memory usage in web applications. Here are some useful links :</p>
+
+<ul>
+<li><a href="https://developers.google.com/chrome-developer-tools/docs/memory-analysis-101">Memory Analysis 101</a></li>
+<li><a href="https://developers.google.com/chrome-developer-tools/docs/heap-profiling">Heap Profiling</a></li>
+</ul>
+
+
+<p>Why do we have to worry about memory management in JS when there is a Garbage Collector ? Because memory leaks can still happen : as long as an object is referenced by another it cannot be disposed by the GC. These references are &ldquo;Retaining Paths&rdquo; in the Heap Profiler.</p>
+
+<p>The majority of memory problems happen because of event binding : events are references which prevents object to be destroyed after they are removed from the DOM. This is a common problem with Backbone Views.</p>
+
+<h2>Example</h2>
+
+<p>Here is a simple example (using the Backbone global object as an event mediator) :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;jquery.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;underscore.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;backbone.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;zombieViews.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">Backbone</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sayFoo</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">sayFoo</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZombieView</span><span class="p">();</span>
+</span><span class='line'>            <span class="nx">view</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/body&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Console Ouptput :</p>
+
+<p><img src="http://rombdn.com/fr/images/backbonemem/100xzombie.png"></p>
+
+<p>Nothing should appear in the console because every view is removed after its creation. As we can see this is not the case : the views are still catching <code>greetingEvent</code> and displaying a message.</p>
+
+<p>A heap snapshot confirm that all the ZombieViews are still here (extended Backbone models have their constructor named <code>child</code>, see <a href="http://rombdn.com/fr/blog/2013/05/21/2013-05-21-identify-backbone-objects-constructors-in-chrome-heap-profiler/">this post</a> for a solution).</p>
+
+<p><img src="http://rombdn.com/fr/images/backbonemem/childpath.png"></p>
+
+<p>Why the views aren&rsquo;t removed ?</p>
+
+<h2>Troobleshoot</h2>
+
+<p>If we take a heap snapshot we can see that the greetingEvent is in the retaining path of the views. This path prevent the GC to dispose the object.</p>
+
+<p><img src="http://rombdn.com/fr/images/backbonemem/retainingpath.png"></p>
+
+<p>Let&rsquo;s modify the code with a call to <code>listenTo</code> instead of <code>Backbone.on</code>. With <code>listenTo</code> models can keep track of events binded so they can be unbinded by the remove method and thus allow the GC to dispose the attached views.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//Backbone.on(&#39;greetingEvent&#39;, this.sayFoo, this);</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="nx">Backbone</span><span class="p">,</span> <span class="s1">&#39;greetingEvent&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sayFoo</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This time nothing shows up in the console, which is the expected output : all the views where removed, none catched the event.</p>
+
+<p><em>Note: You must have noted that the views have their constructor named &lsquo;child&rsquo; which complicate identification, a solution is provided in <a href="http://rombdn.com/fr/blog/2013/05/21/2013-05-21-identify-backbone-objects-constructors-in-chrome-heap-profiler/">this post</a>.</em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Performance analysis : impact of resources saturation on response time]]></title>
+    <link href="http://rombdn.com/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/"/>
+    <updated>2013-03-28T10:00:00+01:00</updated>
+    <id>http://rombdn.com/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation</id>
+    <content type="html"><![CDATA[<h2>Intro</h2>
+
+<p>When investigating performance problems, checking saturation is a good place to start : it means there is queueing to access certains resources.</p>
+
+<p>While in batch processing saturation is usually not a problem (except when throughput is affected), this is not the case for user transactions : any saturation will affect response time.</p>
+
+<p>Saturation may appear at different levels, for example :</p>
+
+<ul>
+<li>System level : CPU (Runqueue), I/O (response time, queue), Memory (swap)&hellip;</li>
+<li>Application level : Application servers messages queue, connections pools&hellip;</li>
+</ul>
+
+
+<p>An exhaustive list can be found here : <a href="http://dtrace.org/blogs/brendan/2012/03/07/the-use-method-linux-performance-checklist/">Linux Performance Checklist</a></p>
+
+<h2>Utilization vs Saturation</h2>
+
+<p>To illustrate the differences between utilization and saturation I made these graphs of an hypothetical user transaction, on a single core CPU system. Runqueue = 2 is the normal situation (one thread can run on CPU and the other can wait for memory or I/O).</p>
+
+<p>Transaction response time :</p>
+
+<p><img src="http://rombdn.com/fr/images/runqueue/resptime1.png" title="Response Time" alt="alt text" /></p>
+
+<p>CPU Utilization :</p>
+
+<p><img src="http://rombdn.com/fr/images/runqueue/cpupercent.png" title="CPU Utilization" alt="alt text" /></p>
+
+<p>RunQueue :</p>
+
+<p><img src="http://rombdn.com/fr/images/runqueue/cpurunqueue2.png" title="Runqueue" alt="alt text" /></p>
+
+<p>Not very realistic ;), but it shows some empirical observations :</p>
+
+<ul>
+<li><p>Transaction response time is not (strongly) correlated with physical resources utilization, contrary to saturation (runqueue).</li></p></li>
+<li><p>The system can generally handle some saturation ( 3 &lt; runqueue &lt; 5) but after a certain threshold response time will rapidly degrade.</li></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JMeter HTTP tips and examples]]></title>
+    <link href="http://rombdn.com/fr/blog/2012/12/17/jmeter-http-tips-and-examples/"/>
+    <updated>2012-12-17T16:00:00+01:00</updated>
+    <id>http://rombdn.com/fr/blog/2012/12/17/jmeter-http-tips-and-examples</id>
+    <content type="html"><![CDATA[<h2>Load all resources attached to a html file</h2>
+
+<p><img src="http://rombdn.com/fr/images/jmeter/http-request.png" alt="alt text" /></p>
+
+<p>Useful when working with frames to avoid one http request per frame (I use this a lot when scripting for PeopleSoft ERP).</p>
+
+<h2>Extract a value to a variable with a regular expression</h2>
+
+<p><img src="http://rombdn.com/fr/images/jmeter/regex1.png" alt="alt text" /></p>
+
+<p>You can use a Debug Listener to adjust the regexp.
+In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo; because the value to be extracted is in a frame.</p>
+
+<h2>Test a variable</h2>
+
+<p><img src="http://rombdn.com/fr/images/jmeter/if-test.png" alt="alt text" /></p>
+
+<p>In this example I verify that the Regular Expression hereabove worked.</p>
+
+<h2>Javascript in parameters (e.g. to randomize a choice)</h2>
+
+<p><em>First we get the number of values :</em></p>
+
+<p><img src="http://rombdn.com/fr/images/jmeter/random-1.png" alt="alt text" /></p>
+
+<p><em>Then we replace the parameter with our javascript :</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">$</span><span class="p">{</span><span class="nx">VALUES_COUNT</span><span class="p">}</span> <span class="p">)</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>In JMeter it becomes :</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">{</span><span class="nx">__javaScript</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">$</span><span class="p">{</span><span class="nx">NB_Lignes</span> <span class="p">}</span> <span class="p">)</span> <span class="p">)</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://rombdn.com/fr/images/jmeter/random-2.png" title="" alt="alt text" /></p>
+
+<p><em>Note : The double <code>$$</code> is due to variable names in PeopleSoft (<code>AF_PCC_WRK_SELECT_PB$1</code>, <code>AF_PCC_WRK_SELECT_PB$2</code>&hellip;)</em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Selenium Webdriver 2 with Python example]]></title>
+    <link href="http://rombdn.com/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/"/>
+    <updated>2012-12-17T12:00:00+01:00</updated>
+    <id>http://rombdn.com/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example</id>
+    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">re</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#browser init</span>
+</span><span class='line'><span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#wait template : 3 seconds</span>
+</span><span class='line'><span class="n">wait</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">browser</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#goto google</span>
+</span><span class='line'><span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://www.google.com&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#verify title using python internal assert</span>
+</span><span class='line'><span class="k">assert</span> <span class="s">&#39;Google&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">title</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#type cheese in the search area then submit</span>
+</span><span class='line'><span class="n">elem</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">elem</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">&#39;cheese&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">elem</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#wait until we get the search results</span>
+</span><span class='line'><span class="c">#see http://seleniumhq.org/docs/04_webdriver_advanced.html for details</span>
+</span><span class='line'><span class="n">wait</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span> <span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;cheese&#39;</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">assert</span> <span class="s">&#39;cheese&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">title</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#goto to translate tools</span>
+</span><span class='line'><span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_link_text</span><span class="p">(</span><span class="s">&#39;Plus&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#wait until the menu is displayed (french)</span>
+</span><span class='line'><span class="c">#ExpectedConditions.elementsToBeClickable is not available in python</span>
+</span><span class='line'><span class="c">#instead we can use is_displayed()</span>
+</span><span class='line'><span class="c">#see http://selenium-python.readthedocs.org/en/latest/api.html</span>
+</span><span class='line'><span class="n">wait</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span> <span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">find_element_by_link_text</span><span class="p">(</span><span class="s">&#39;Traduction&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#translate from english to french</span>
+</span><span class='line'><span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_link_text</span><span class="p">(</span><span class="s">&#39;Traduction&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+</span><span class='line'><span class="k">assert</span> <span class="s">&#39;fromage&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">&#39;result_box&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linerider clone with HTML5 and Box2D JS]]></title>
+    <link href="http://rombdn.com/fr/blog/2012/12/17/little-game-canvas-box2d/"/>
+    <updated>2012-12-17T10:00:00+01:00</updated>
+    <id>http://rombdn.com/fr/blog/2012/12/17/little-game-canvas-box2d</id>
+    <content type="html"><![CDATA[<p>Here is a little game I made for a friend while playing around with HTML5 Canvas, Javascript and <a href="http://box2d.org">Box2D</a> :</p>
+
+<p><strong><a href="http://www.wajrak.com">Dog Sled</a></strong> &ndash; <a href="https://github.com/rombdn/dogsled">source</a></p>
+
+<p><img src="http://rombdn.com/fr/images/dogsled/dogsled.jpg"></p>
+
+<p>I have planned to do some refactor because the code is very hacky and it currently runs only in WebKit.</p>
+
+<p>Despise that I think that some parts could help as real world examples of Box2D usage in javascript, and how to add graphics in front of Box2D&hellip; All the game code and logic is in index.html (hem&hellip; ;) )</p>
+
+<h2>Code highlights</h2>
+
+<h3>Initialisations</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//...</span>
+</span><span class='line'><span class="nx">dog_initcanvas</span><span class="p">();</span>
+</span><span class='line'><span class="nx">dog_initsound</span><span class="p">();</span>
+</span><span class='line'><span class="nx">dog_events</span><span class="p">();</span> <span class="c1">//mouse and keyboard</span>
+</span><span class='line'><span class="nx">dog_initworld</span><span class="p">();</span>
+</span><span class='line'><span class="nx">dog_setupcollisions</span><span class="p">();</span>
+</span><span class='line'><span class="nx">dog_initdraw</span><span class="p">();</span>
+</span><span class='line'><span class="nx">dog_update</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Collisions</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//...</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">dog_setupcollisions</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="kd">var</span> <span class="nx">listener</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Box2D</span><span class="p">.</span><span class="nx">Dynamics</span><span class="p">.</span><span class="nx">b2ContactListener</span><span class="p">;</span>
+</span><span class='line'>   <span class="nx">listener</span><span class="p">.</span><span class="nx">BeginContact</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">contact</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//if the dog touch the line we add a flag</span>
+</span><span class='line'>      <span class="c1">//...</span>
+</span><span class='line'>   <span class="nx">listener</span><span class="p">.</span><span class="nx">PreSolve</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">contact</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//if the dog eats a bone there&#39;s no collision</span>
+</span><span class='line'>      <span class="c1">//...</span>
+</span><span class='line'>   <span class="nx">listener</span><span class="p">.</span><span class="nx">PostSolve</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">contact</span><span class="p">,</span> <span class="nx">impulse</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//if the dog touch his house</span>
+</span><span class='line'>      <span class="c1">//and sounds...</span>
+</span><span class='line'>      <span class="c1">//...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Main loop</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//...</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">dog_update</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">dog_update</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">world</span><span class="p">.</span><span class="nx">Step</span><span class="p">(</span>
+</span><span class='line'>      <span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span><span class="p">,</span>   <span class="c1">//frame-rate</span>
+</span><span class='line'>      <span class="mi">10</span><span class="p">,</span>      <span class="c1">//velocity iterations</span>
+</span><span class='line'>      <span class="mi">10</span>      <span class="c1">//position iterations</span>
+</span><span class='line'>  <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">world</span><span class="p">.</span><span class="nx">ClearForces</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">canvas_draw</span><span class="p">();</span> <span class="c1">//graphics</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">//...</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">canvas_draw</span><span class="p">()</span>
+</span><span class='line'><span class="c1">//...</span>
+</span><span class='line'><span class="c1">//we iterate through all the bodies</span>
+</span><span class='line'><span class="k">for</span><span class="p">(</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">world</span><span class="p">.</span><span class="nx">GetBodyList</span><span class="p">();</span> <span class="nx">body</span><span class="p">;</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">GetNext</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>   <span class="c1">//...</span>
+</span><span class='line'>   <span class="c1">//we use the User Data field to know what to draw</span>
+</span><span class='line'>  <span class="k">switch</span><span class="p">(</span><span class="nx">body</span><span class="p">.</span><span class="nx">GetUserData</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">case</span> <span class="s1">&#39;line&#39;</span><span class="o">:</span>
+</span><span class='line'><span class="c1">//...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>More to come&hellip;</h3>
+
+<p>I used <strong><a href="http://code.google.com/p/box2dweb">Box2DWeb</a></strong>, a javascript port of box2d 2.1. It lacks features like rope joint but I realized it too late&hellip;
+More up to date ports i didn&rsquo;t try : </p>
+
+<ul>
+<li><a href="http://code.google.com/p/box2d-html5">Box2D-HTML5</a></li>
+<li><a href="https://github.com/kripken/box2d.js">Kripken&rsquo;s Box2DJS</a></li>
+</ul>
+
+
+<p>Have fun!</p>
+
+<p><em>Good tutorials : <a href="http://blog.sethladd.com/search/label/box2d">Seth Ladd&rsquo;s blog</a></em></p>
+]]></content>
+  </entry>
+  
+</feed>

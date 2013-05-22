@@ -6,10 +6,10 @@ comments: true
 categories: 
 ---
 
-*Note: this post is based on the idea of Named Constructors from [Coccyx](https://github.com/onsi/coccyx)*
+*Note: this post is based on the idea of Named Constructors from the [Coccyx](https://github.com/onsi/coccyx) library*
 
 
-In [this post](/blog/2013/05/21/identify-backbone-memory-leaks-with-chrome-heap-profiler/) I showed an example of a memory leak in Backbone and how to troobleshoot it using the Chrome Heap Profiler :
+In [this post](/blog/2013/05/21/backbone-memory-leaks-with-chrome-heap-profiler/) I showed an example of a memory leak in Backbone, and how to troobleshoot it using the Chrome Heap Profiler :
 
 ```javascript
     var ZombieView = Backbone.View.extend({
@@ -33,7 +33,7 @@ In [this post](/blog/2013/05/21/identify-backbone-memory-leaks-with-chrome-heap-
 {% img /images/backbonemem/child.png %}
 
 
-But Model identification is not easy because all models extended from Backbone Model/View have their constructor named *child* in the Heap Profiler.
+But identifying these views is not easy because models extended from Backbone Model/View have their constructor named `child` in the Heap Profiler.
 
 
 {% img /images/backbonemem/childpath.png %}
