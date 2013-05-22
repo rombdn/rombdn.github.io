@@ -16,9 +16,9 @@ The Heap Profiler in Chrome is a powerful tool to analyze memory usage in web ap
 - [Heap Profiling](https://developers.google.com/chrome-developer-tools/docs/heap-profiling)
 
 
-Why do we have to worry about memory management in JS when there is a Garbage Collector ? Because memory leaks can still happen : as long as an object is referenced by another it cannot be disposed by the GC. 
+Why do we have to worry about memory management in JS when there is a Garbage Collector ? Because memory leaks can still happen : as long as an object is referenced by another it cannot be disposed by the GC. These references are "Retaining Paths" in the Heap Profiler. 
 
-These references can be seen as the "Retaining Path" in the Heap Profiler. In most case these problems happen when binding events because events maintain references after an object should have been destroyed. This is a common problem with Backbone where views remain binded to events.
+The majority of memory problems happen because of event binding : events are references which prevents object to be destroyed after they are removed from the DOM. This is a common problem with Backbone Views.
 
 
 Example
