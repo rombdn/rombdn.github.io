@@ -4,6 +4,8 @@ title: "Selenium Webdriver 2 with Python example"
 date: 2012-12-17 12:00
 comments: true
 categories: 
+keywords: "performance, qa, test, selenium, webdriver, python"
+description: "Selenium Webdriver example in Python"
 ---
 
 ```python

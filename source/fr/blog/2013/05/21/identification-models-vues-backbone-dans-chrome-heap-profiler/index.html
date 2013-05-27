@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome - Romain Beaudon</title>
+  <meta name="author" content="Romain Beaudon">
+
+  
+  <meta name="description" content="Comment identifier les modeles et les vues Backbone dans le Heap Profiler de Chrome">
+  
+  <meta name="keywords" content="backbone, javascript, chrome, heap profiler, memoire, fuite, web development">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler">
+  <link href="/fr/favicon.png" rel="icon">
+  <link href="/fr/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Romain Beaudon" type="application/atom+xml">
+  <script src="/fr/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/fr/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/fr/">Romain Beaudon</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.rombdn.com/fr" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/fr/blog">Blog</a></li>
+  <li><a href="/fr/../blog">English blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T16:15:00+02:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><em>Note: ce post reprend l&#8217;idée du nommage des constructeurs utilisé dans la librairie <a href="https://github.com/onsi/coccyx">Coccyx</a></em></p>
+
+<p>Dans <a href="/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/">ce post</a> j&#8217;ai donné un example de fuite mémoire avec Backbone, ainsi que comment l&#8217;analyser avec le Heap Profiler de Chrome. Pour rappel voici le code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sayFoo</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">sayFoo</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZombieView</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">view</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Backbone</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/fr/images/backbonemem/child.png"></p>
+
+<p>Cependant l&#8217;identification des vues en question est difficile car les objets étendus depuis un Model ou une View Backbone ont leur Constructeur renommé <code>child</code>.</p>
+
+<p><img src="/fr/images/backbonemem/childpath.png"></p>
+
+<p>Une solution à ce problème serait donc de pouvoir nommer les constructeurs de nos objets. Voici un petit hack permettant de faire cela :</p>
+
+<p>Dans le fichier backbone.js, aux alentours de la ligne 1541 :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// The constructor function for the new subclass is either defined by you</span>
+</span><span class='line'><span class="c1">// (the &quot;constructor&quot; property in your `extend` definition), or defaulted</span>
+</span><span class='line'><span class="c1">// by us to simply call the parent&#39;s constructor.</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">protoProps</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructor&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il suffit simplement d&#8217;ajouter un cas pour le nommage du constructeur :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">protoProps</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructor&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructorName&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;child = function &quot;</span> <span class="o">+</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructorName</span> <span class="o">+</span> <span class="s2">&quot;() { return parent.apply(this, arguments); };&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Note: à cause de l&#8217;utilisation de <code>eval</code> ce code ne devrait pas être utilisé en production&hellip;</em></p>
+
+<p>Nous avons maintenant la possibilité d&#8217;ajouter une variable à nos models et views.</p>
+
+<h3>Example avec la vue précédente</h3>
+
+<p>Ajout d&#8217;un nom pour le Constructeur :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">constructorName</span><span class="o">:</span> <span class="s1">&#39;Zombie&#39;</span><span class="p">,</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Les vues sont maintenant correctement identifiables dans le Heap Profiler :</p>
+
+<p><img src="/fr/images/backbonemem/zombie.png"></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Romain Beaudon</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T16:15:00+02:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/" data-via="rombdn" data-counturl="http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/" title="Previous Post: Analyse des fuites memoire dans Backbone avec le Heap Profiler de Chrome">&laquo; Analyse des fuites memoire dans Backbone avec le Heap Profiler de Chrome</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+    <div style="text-align: right"><a href="/fr/../blog">EN</a> - <a href="/fr/blog">FR</a></div>
+</section><section>
+  <h1>About me</h1>
+  <p><img class="left" src="/fr/images/avatar.jpg" width="80" height="80"> <strong>Romain Beaudon</strong><br>
+    <em>Paris, France</em><br><br>
+
+    Je suis un consultant technique travaillant principalement dans les domaines de l'ingénierie des performances, de l'architecture et de l'exploitation. Sur mon temps libre je fais également du développement web front et back-end.</p>
+  <p>
+    <a href="http://www.twitter.com/rombdn">Twitter</a><br>
+    <a href="http://www.linkedin.com/pub/romain-beaudon/18/199/223">LinkedIn</a>
+  </p>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/">Analyse des fuites memoire dans Backbone avec le Heap Profiler de Chrome</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/">Performance analysis : impact of resources saturation on response time</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2012/12/17/jmeter-http-tips-and-examples/">JMeter HTTP tips and examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/">Selenium Webdriver 2 with Python example</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2012/12/17/little-game-canvas-box2d/">Linerider clone with HTML5 and Box2D JS</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+	<h1>Twitter</h1>
+<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/rombdn" data-widget-id="336866910828363776">Tweets by @rombdn</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/112678424699484797019?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Romain Beaudon -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

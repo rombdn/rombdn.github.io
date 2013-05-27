@@ -4,6 +4,8 @@ title: "JMeter HTTP tips and examples"
 date: 2012-12-17 16:00
 comments: true
 categories: 
+keywords: "performance, qa, test, selenium, jmeter, peoplesoft"
+description: "JMeter HTTP examples on an enterprise application (PeopleSoft)"
 ---
 
 Load all resources attached to a html file

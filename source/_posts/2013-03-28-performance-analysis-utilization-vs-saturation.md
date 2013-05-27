@@ -4,6 +4,8 @@ title: "Performance analysis : impact of resources saturation on response time"
 date: 2013-03-28 10:00
 comments: true
 categories: 
+keywords: "performance, metrics, monitoring, supervision, analysis, troubleshooting"
+description: "Differences between resources utilization and saturation and impact and transactions response time"
 ---
 
 Intro

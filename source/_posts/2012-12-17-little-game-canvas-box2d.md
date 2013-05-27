@@ -4,9 +4,11 @@ title: "Linerider clone with HTML5 and Box2D JS"
 date: 2012-12-17 10:00
 comments: true
 categories: 
+keywords: "html5, canvas, javascript, game, box2d, box2djs, physics"
+description: "A simple game with HTML5 Canvas, javascript and Box2D"
 ---
 
-Here is a little game I made for a friend while playing around with HTML5 Canvas, Javascript and [Box2D](http://box2d.org) :
+Here is a little game (based on Line Rider) I made for a friend while playing around with HTML5 Canvas, Javascript and [Box2D](http://box2d.org) :
 
 **[Dog Sled](http://www.wajrak.com)** - [source](https://github.com/rombdn/dogsled)
 

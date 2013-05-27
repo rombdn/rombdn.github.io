@@ -1,26 +1,101 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Romain Beaudon]]></title>
-  <link href="http://www.rombdn.com/fr/atom.xml" rel="self"/>
-  <link href="http://www.rombdn.com/fr/"/>
-  <updated>2013-05-27T13:57:13+02:00</updated>
-  <id>http://www.rombdn.com/fr/</id>
-  <author>
-    <name><![CDATA[Romain Beaudon]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Romain Beaudon</title>
+  <meta name="author" content="Romain Beaudon">
 
   
-  <entry>
-    <title type="html"><![CDATA[Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome]]></title>
-    <link href="http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/"/>
-    <updated>2013-05-21T16:15:00+02:00</updated>
-    <id>http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler</id>
-    <content type="html"><![CDATA[<p><em>Note: ce post reprend l&#8217;idée du nommage des constructeurs utilisé dans la librairie <a href="https://github.com/onsi/coccyx">Coccyx</a></em></p>
+  <meta name="description" content="Mon blog sur le Developpement, l'Architecture, la Performance et divers geekeries">
+  
+  <meta name="keywords" content="developpement, code, test, performance, architecture, web, javascript, html, mobile">
 
-<p>Dans <a href="http://www.rombdn.com/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/">ce post</a> j&#8217;ai donné un example de fuite mémoire avec Backbone, ainsi que comment l&#8217;analyser avec le Heap Profiler de Chrome. Pour rappel voici le code :</p>
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.rombdn.com/fr/blog">
+  <link href="/fr/favicon.png" rel="icon">
+  <link href="/fr/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Romain Beaudon" type="application/atom+xml">
+  <script src="/fr/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/fr/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/fr/">Romain Beaudon</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.rombdn.com/fr" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/fr/blog">Blog</a></li>
+  <li><a href="/fr/../blog">English blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T16:15:00+02:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>Note: ce post reprend l&#8217;idée du nommage des constructeurs utilisé dans la librairie <a href="https://github.com/onsi/coccyx">Coccyx</a></em></p>
+
+<p>Dans <a href="/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/">ce post</a> j&#8217;ai donné un example de fuite mémoire avec Backbone, ainsi que comment l&#8217;analyser avec le Heap Profiler de Chrome. Pour rappel voici le code :</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -57,11 +132,11 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><img src="http://www.rombdn.com/fr/images/backbonemem/child.png"></p>
+<p><img src="/fr/images/backbonemem/child.png"></p>
 
 <p>Cependant l&#8217;identification des vues en question est difficile car les objets étendus depuis un Model ou une View Backbone ont leur Constructeur renommé <code>child</code>.</p>
 
-<p><img src="http://www.rombdn.com/fr/images/backbonemem/childpath.png"></p>
+<p><img src="/fr/images/backbonemem/childpath.png"></p>
 
 <p>Une solution à ce problème serait donc de pouvoir nommer les constructeurs de nos objets. Voici un petit hack permettant de faire cela :</p>
 
@@ -128,16 +203,43 @@
 
 <p>Les vues sont maintenant correctement identifiables dans le Heap Profiler :</p>
 
-<p><img src="http://www.rombdn.com/fr/images/backbonemem/zombie.png"></p>
-]]></content>
-  </entry>
+<p><img src="/fr/images/backbonemem/zombie.png"></p>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[Analyse des fuites memoire dans Backbone avec le Heap Profiler de Chrome]]></title>
-    <link href="http://www.rombdn.com/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/"/>
-    <updated>2013-05-21T10:10:00+02:00</updated>
-    <id>http://www.rombdn.com/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome</id>
-    <content type="html"><![CDATA[<h2>Intro</h2>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/">Analyse des fuites memoire dans Backbone avec le Heap Profiler de Chrome</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T10:10:00+02:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Intro</h2>
 
 <p>Le Heap Profiler de Chrome est un outil puissant pour analyser en détail l&#8217;utilisation de la mémoire dans les applications web.</p>
 
@@ -220,15 +322,15 @@
 
 <p>Console Ouptput :</p>
 
-<p><img src="http://www.rombdn.com/fr/images/backbonemem/100xzombie.png"></p>
+<p><img src="/fr/images/backbonemem/100xzombie.png"></p>
 
 <p>Rien ne devrait normalement apparaître dans la console car chaque vue est supprimée juste après sa création. Comme nous pouvons le voir ce n&#8217;est pas le cas : les vues continuent de répondre à l&#8217;évènement <code>greetingEvent</code> et d&#8217;afficher le message.</p>
 
-<p>Un snapshot de la Heap permet de confirmer que toutes les <code>ZombieViews</code> sont toujours présentes (les Models/Views étendus depuis un Model Backbone ont leurs constructeurs nommés <code>child</code>, voir <a href="http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">ce post</a> pour une solution de contournement).</p>
+<p>Un snapshot de la Heap permet de confirmer que toutes les <code>ZombieViews</code> sont toujours présentes (les Models/Views étendus depuis un Model Backbone ont leurs constructeurs nommés <code>child</code>, voir <a href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">ce post</a> pour une solution de contournement).</p>
 
-<p><img src="http://www.rombdn.com/fr/images/backbonemem/takesnapshot.png"></p>
+<p><img src="/fr/images/backbonemem/takesnapshot.png"></p>
 
-<p><img src="http://www.rombdn.com/fr/images/backbonemem/childpath.png"></p>
+<p><img src="/fr/images/backbonemem/childpath.png"></p>
 
 <p>Pourquoi les vues ne sont-elles donc pas supprimées ?</p>
 
@@ -236,7 +338,7 @@
 
 <p>Dans le snapshot de la Heap nous voyons que <code>greetingEvent</code> est dans le Retaining Path des vues. C&#8217;est ce path qui empêche le GC de libérer les objets.</p>
 
-<p><img src="http://www.rombdn.com/fr/images/backbonemem/retainingpath.png"></p>
+<p><img src="/fr/images/backbonemem/retainingpath.png"></p>
 
 <p>Modifions le code avec un appel à <code>listenTo</code> plutôt que <code>Backbone.on</code>. Avec <code>listenTo</code> les vues peuvent garder la trace des événèmements attachés et ainsi les détacher lors d&#8217;un appel à la méthode <code>remove</code>. Cela permet enfin au GC de libérer ces vues.</p>
 
@@ -249,16 +351,43 @@
 
 <p>Cette fois-ci rien n&#8217;apparaît dans la console, ce qui est le comportement attendu : toutes les vues ont été supprimées et aucune n&#8217;a donc répondu à l&#8217;évènement.</p>
 
-<p><em>Note: Vous avez surement remarqué que les vues ont leur Constructeur nommé <code>child</code>, ce qui complique leur identification. Un solution est donné dans <a href="http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">ce post</a>.</em></p>
-]]></content>
-  </entry>
+<p><em>Note: Vous avez surement remarqué que les vues ont leur Constructeur nommé <code>child</code>, ce qui complique leur identification. Un solution est donné dans <a href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">ce post</a>.</em></p>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[Performance analysis : impact of resources saturation on response time]]></title>
-    <link href="http://www.rombdn.com/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/"/>
-    <updated>2013-03-28T10:00:00+01:00</updated>
-    <id>http://www.rombdn.com/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation</id>
-    <content type="html"><![CDATA[<h2>Intro</h2>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/">Performance analysis : impact of resources saturation on response time</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-28T10:00:00+01:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Intro</h2>
 
 <p>When investigating performance problems, checking saturation is a good place to start : it means there is queueing to access certains resources.</p>
 
@@ -280,15 +409,15 @@
 
 <p>Transaction response time :</p>
 
-<p><img src="http://www.rombdn.com/fr/images/runqueue/resptime1.png" title="Response Time" alt="alt text" /></p>
+<p><img src="/fr/images/runqueue/resptime1.png" title="Response Time" alt="alt text" /></p>
 
 <p>CPU Utilization :</p>
 
-<p><img src="http://www.rombdn.com/fr/images/runqueue/cpupercent.png" title="CPU Utilization" alt="alt text" /></p>
+<p><img src="/fr/images/runqueue/cpupercent.png" title="CPU Utilization" alt="alt text" /></p>
 
 <p>RunQueue :</p>
 
-<p><img src="http://www.rombdn.com/fr/images/runqueue/cpurunqueue2.png" title="Runqueue" alt="alt text" /></p>
+<p><img src="/fr/images/runqueue/cpurunqueue2.png" title="Runqueue" alt="alt text" /></p>
 
 <p>Not very realistic ;), but it shows some empirical observations :</p>
 
@@ -297,30 +426,57 @@
 <li><p>The system can generally handle some saturation ( 3 &lt; runqueue &lt; 5) but after a certain threshold response time will rapidly degrade.</li></p></li>
 </ul>
 
-]]></content>
-  </entry>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[JMeter HTTP tips and examples]]></title>
-    <link href="http://www.rombdn.com/fr/blog/2012/12/17/jmeter-http-tips-and-examples/"/>
-    <updated>2012-12-17T16:00:00+01:00</updated>
-    <id>http://www.rombdn.com/fr/blog/2012/12/17/jmeter-http-tips-and-examples</id>
-    <content type="html"><![CDATA[<h2>Load all resources attached to a html file</h2>
+  
 
-<p><img src="http://www.rombdn.com/fr/images/jmeter/http-request.png" alt="alt text" /></p>
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fr/blog/2012/12/17/jmeter-http-tips-and-examples/">JMeter HTTP tips and examples</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-17T16:00:00+01:00" pubdate data-updated="true">Dec 17<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Load all resources attached to a html file</h2>
+
+<p><img src="/fr/images/jmeter/http-request.png" alt="alt text" /></p>
 
 <p>Useful when working with frames to avoid one http request per frame (I use this a lot when scripting for PeopleSoft ERP).</p>
 
 <h2>Extract a value to a variable with a regular expression</h2>
 
-<p><img src="http://www.rombdn.com/fr/images/jmeter/regex1.png" alt="alt text" /></p>
+<p><img src="/fr/images/jmeter/regex1.png" alt="alt text" /></p>
 
 <p>You can use a Debug Listener to adjust the regexp.
 In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo; because the value to be extracted is in a frame.</p>
 
 <h2>Test a variable</h2>
 
-<p><img src="http://www.rombdn.com/fr/images/jmeter/if-test.png" alt="alt text" /></p>
+<p><img src="/fr/images/jmeter/if-test.png" alt="alt text" /></p>
 
 <p>In this example I verify that the Regular Expression hereabove worked.</p>
 
@@ -328,7 +484,7 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
 
 <p><em>First we get the number of values :</em></p>
 
-<p><img src="http://www.rombdn.com/fr/images/jmeter/random-1.png" alt="alt text" /></p>
+<p><img src="/fr/images/jmeter/random-1.png" alt="alt text" /></p>
 
 <p><em>Then we replace the parameter with our javascript :</em></p>
 
@@ -344,18 +500,45 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><img src="http://www.rombdn.com/fr/images/jmeter/random-2.png" title="" alt="alt text" /></p>
+<p><img src="/fr/images/jmeter/random-2.png" title="" alt="alt text" /></p>
 
 <p><em>Note : The double <code>$$</code> is due to variable names in PeopleSoft (<code>AF_PCC_WRK_SELECT_PB$1</code>, <code>AF_PCC_WRK_SELECT_PB$2</code>&hellip;)</em></p>
-]]></content>
-  </entry>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[Selenium Webdriver 2 with Python example]]></title>
-    <link href="http://www.rombdn.com/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/"/>
-    <updated>2012-12-17T12:00:00+01:00</updated>
-    <id>http://www.rombdn.com/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example</id>
-    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/">Selenium Webdriver 2 with Python example</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-17T12:00:00+01:00" pubdate data-updated="true">Dec 17<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -439,19 +622,46 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
 </span><span class='line'><span class="k">assert</span> <span class="s">&#39;fromage&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">&#39;result_box&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[Linerider clone with HTML5 and Box2D JS]]></title>
-    <link href="http://www.rombdn.com/fr/blog/2012/12/17/little-game-canvas-box2d/"/>
-    <updated>2012-12-17T10:00:00+01:00</updated>
-    <id>http://www.rombdn.com/fr/blog/2012/12/17/little-game-canvas-box2d</id>
-    <content type="html"><![CDATA[<p>Here is a little game I made for a friend while playing around with HTML5 Canvas, Javascript and <a href="http://box2d.org">Box2D</a> :</p>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fr/blog/2012/12/17/little-game-canvas-box2d/">Linerider clone with HTML5 and Box2D JS</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-17T10:00:00+01:00" pubdate data-updated="true">Dec 17<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Here is a little game I made for a friend while playing around with HTML5 Canvas, Javascript and <a href="http://box2d.org">Box2D</a> :</p>
 
 <p><strong><a href="http://www.wajrak.com">Dog Sled</a></strong> &ndash; <a href="https://github.com/rombdn/dogsled">source</a></p>
 
-<p><img src="http://www.rombdn.com/fr/images/dogsled/dogsled.jpg"></p>
+<p><img src="/fr/images/dogsled/dogsled.jpg"></p>
 
 <p>I have planned to do some refactor because the code is very hacky and it currently runs only in WebKit.</p>
 
@@ -582,7 +792,122 @@ More up to date ports i didn&rsquo;t try : </p>
 <p>Have fun!</p>
 
 <p><em>Good tutorials : <a href="http://blog.sethladd.com/search/label/box2d">Seth Ladd&rsquo;s blog</a></em></p>
-]]></content>
-  </entry>
+</div>
   
-</feed>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/fr/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+    <div style="text-align: right"><a href="/fr/../blog">EN</a> - <a href="/fr/blog">FR</a></div>
+</section><section>
+  <h1>About me</h1>
+  <p><img class="left" src="/fr/images/avatar.jpg" width="80" height="80"> <strong>Romain Beaudon</strong><br>
+    <em>Paris, France</em><br><br>
+
+    Je suis un consultant technique travaillant principalement dans les domaines de l&#8217;ingénierie des performances, de l&#8217;architecture et de l&#8217;exploitation. Sur mon temps libre je fais également du développement web front et back-end.</p>
+  <p>
+    <a href="http://www.twitter.com/rombdn">Twitter</a><br>
+    <a href="http://www.linkedin.com/pub/romain-beaudon/18/199/223">LinkedIn</a>
+  </p>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/">Analyse des fuites memoire dans Backbone avec le Heap Profiler de Chrome</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/">Performance analysis : impact of resources saturation on response time</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2012/12/17/jmeter-http-tips-and-examples/">JMeter HTTP tips and examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/">Selenium Webdriver 2 with Python example</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2012/12/17/little-game-canvas-box2d/">Linerider clone with HTML5 and Box2D JS</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+	<h1>Twitter</h1>
+<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/rombdn" data-widget-id="336866910828363776">Tweets by @rombdn</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/112678424699484797019?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Romain Beaudon -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

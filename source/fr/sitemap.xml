@@ -1,45 +1,47 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://rombdn.com/fr/blog/2012/12/17/little-game-canvas-box2d/</loc>
-        <lastmod>2013-05-22T14:42:58+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://rombdn.com/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/</loc>
-        <lastmod>2013-05-21T17:01:12+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://rombdn.com/fr/blog/2012/12/17/jmeter-http-tips-and-examples/</loc>
-        <lastmod>2013-05-22T14:34:59+02:00</lastmod>
+        <loc>http://www.rombdn.com/fr/blog/2012/12/17/little-game-canvas-box2d/</loc>
+        <lastmod>2013-05-27T13:48:04+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://rombdn.com/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/
+            http://www.rombdn.com/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/
         </loc>
-        <lastmod>2013-05-22T14:45:42+02:00</lastmod>
+        <lastmod>2013-05-27T13:47:57+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.rombdn.com/fr/blog/2012/12/17/jmeter-http-tips-and-examples/</loc>
+        <lastmod>2013-05-27T13:48:11+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://rombdn.com/fr/blog/2013/05/21/backbone-memory-leaks-with-chrome-heap-profiler/
+            http://www.rombdn.com/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/
         </loc>
-        <lastmod>2013-05-22T15:14:23+02:00</lastmod>
+        <lastmod>2013-05-27T13:47:18+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://rombdn.com/fr/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/
+            http://www.rombdn.com/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/
         </loc>
-        <lastmod>2013-05-22T18:31:18+02:00</lastmod>
+        <lastmod>2013-05-27T13:47:27+02:00</lastmod>
     </url>
     <url>
-        <loc>http://rombdn.com/fr/blog/archives/</loc>
-        <lastmod>2013-05-22T18:31:18+02:00</lastmod>
+        <loc>
+            http://www.rombdn.com/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/
+        </loc>
+        <lastmod>2013-05-27T13:47:45+02:00</lastmod>
     </url>
     <url>
-        <loc>http://rombdn.com/fr/</loc>
-        <lastmod>2013-05-22T18:31:18+02:00</lastmod>
+        <loc>http://www.rombdn.com/fr/blog/archives/</loc>
+        <lastmod>2013-05-27T13:48:11+02:00</lastmod>
     </url>
     <url>
-        <loc>http://rombdn.com/fr/robots.txt</loc>
-        <lastmod>2013-05-21T10:53:24+02:00</lastmod>
+        <loc>http://www.rombdn.com/fr/blog/</loc>
+        <lastmod>2013-05-27T13:48:11+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.rombdn.com/fr/</loc>
+        <lastmod>2013-05-27T13:48:11+02:00</lastmod>
     </url>
 </urlset>
