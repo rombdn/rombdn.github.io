@@ -1,10 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://www.rombdn.com/fr/blog/2012/12/17/little-game-canvas-box2d/</loc>
-        <lastmod>2013-05-27T13:48:04+02:00</lastmod>
-    </url>
-    <url>
         <loc>
             http://www.rombdn.com/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/
         </loc>
@@ -21,6 +17,10 @@
         <lastmod>2013-05-27T13:47:18+02:00</lastmod>
     </url>
     <url>
+        <loc>http://www.rombdn.com/fr/blog/2013/04/03/little-game-canvas-box2d/</loc>
+        <lastmod>2013-08-22T12:16:57+02:00</lastmod>
+    </url>
+    <url>
         <loc>
             http://www.rombdn.com/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/
         </loc>
@@ -33,15 +33,23 @@
         <lastmod>2013-05-27T13:47:45+02:00</lastmod>
     </url>
     <url>
+        <loc>http://www.rombdn.com/fr/blog/2013/08/21/paris-transports-route-firefox-os/</loc>
+        <lastmod>2013-08-22T12:50:33+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.rombdn.com/fr/blog/2013/09/11/backbone-leaflet-nightlife-app/</loc>
+        <lastmod>2013-09-11T12:41:54+02:00</lastmod>
+    </url>
+    <url>
         <loc>http://www.rombdn.com/fr/blog/archives/</loc>
-        <lastmod>2013-05-27T13:48:11+02:00</lastmod>
+        <lastmod>2013-09-11T12:41:54+02:00</lastmod>
     </url>
     <url>
         <loc>http://www.rombdn.com/fr/blog/</loc>
-        <lastmod>2013-05-27T13:48:11+02:00</lastmod>
+        <lastmod>2013-09-11T12:41:54+02:00</lastmod>
     </url>
     <url>
         <loc>http://www.rombdn.com/fr/</loc>
-        <lastmod>2013-05-27T13:48:11+02:00</lastmod>
+        <lastmod>2013-09-11T12:41:54+02:00</lastmod>
     </url>
 </urlset>

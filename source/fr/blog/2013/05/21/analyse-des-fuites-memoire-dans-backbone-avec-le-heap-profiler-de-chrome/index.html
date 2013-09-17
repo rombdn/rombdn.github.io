@@ -244,7 +244,7 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/" title="Previous Post: Performance analysis : impact of resources saturation on response time">&laquo; Performance analysis : impact of resources saturation on response time</a>
+        <a class="basic-alignment left" href="/fr/blog/2013/04/03/little-game-canvas-box2d/" title="Previous Post: Linerider clone with HTML5 and Box2D JS">&laquo; Linerider clone with HTML5 and Box2D JS</a>
       
       
         <a class="basic-alignment right" href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/" title="Next Post: Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome">Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome &raquo;</a>
@@ -264,14 +264,23 @@
   <p><img class="left" src="/fr/images/avatar.jpg" width="80" height="80"> <strong>Romain Beaudon</strong><br>
     <em>Paris, France</em><br><br>
 
-    Je suis un consultant technique travaillant principalement dans les domaines de l'ingénierie des performances, de l'architecture et de l'exploitation. Sur mon temps libre je fais également du développement web front et back-end.</p>
+    Je suis un consultant technique travaillant principalement dans les domaines de l'ingénierie des performances et de l'architecture. Sur mon temps libre je fais du développement web et de la musique</p>
   <p>
+    <a href="http://github.com/rombdn">Github</a><br>
     <a href="http://www.twitter.com/rombdn">Twitter</a><br>
     <a href="http://www.linkedin.com/pub/romain-beaudon/18/199/223">LinkedIn</a>
   </p>
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/fr/blog/2013/09/11/backbone-leaflet-nightlife-app/">Nightlife webapp built with Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/08/21/paris-transports-route-firefox-os/">Paris Public Transports route planning webapp for Firefox OS</a>
+      </li>
     
       <li class="post">
         <a href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome</a>
@@ -282,29 +291,50 @@
       </li>
     
       <li class="post">
+        <a href="/fr/blog/2013/04/03/little-game-canvas-box2d/">Linerider clone with HTML5 and Box2D JS</a>
+      </li>
+    
+      <li class="post">
         <a href="/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/">Performance analysis : impact of resources saturation on response time</a>
-      </li>
-    
-      <li class="post">
-        <a href="/fr/blog/2012/12/17/jmeter-http-tips-and-examples/">JMeter HTTP tips and examples</a>
-      </li>
-    
-      <li class="post">
-        <a href="/fr/blog/2012/12/17/selenium-webdriver-2-with-python-example/">Selenium Webdriver 2 with Python example</a>
-      </li>
-    
-      <li class="post">
-        <a href="/fr/blog/2012/12/17/little-game-canvas-box2d/">Linerider clone with HTML5 and Box2D JS</a>
       </li>
     
   </ul>
 </section>
-
 <section>
 	<h1>Twitter</h1>
 <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/rombdn" data-widget-id="336866910828363776">Tweets by @rombdn</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/rombdn">@rombdn</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'rombdn',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/fr/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
 
 <section class="googleplus">
   <h1>
