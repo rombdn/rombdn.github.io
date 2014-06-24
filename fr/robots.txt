@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://rombdn.com/fr/sitemap.xml 
