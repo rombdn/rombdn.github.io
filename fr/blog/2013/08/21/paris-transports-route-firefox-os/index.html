@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="fr"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Paris Public Transports route planning webapp for Firefox OS - Romain Beaudon</title>
+  <meta name="author" content="Romain Beaudon">
+
+  
+  <meta name="description" content="Paris Public Transports route planning webapp for Firefox OS, using RATP Open Date and shortest path in Graphs">
+  
+  <meta name="keywords" content="firefoxos, firefox os, javascript, dijkstra, graph, metro, bus, public transports, development, webapp">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.rombdn.com/fr/blog/2013/08/21/paris-transports-route-firefox-os">
+  <link href="/fr/favicon.png" rel="icon">
+  <link href="/fr/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Romain Beaudon" type="application/atom+xml">
+  <script src="/fr/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/fr/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/fr/">Romain Beaudon</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.rombdn.com/fr" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/fr/blog">Blog</a></li>
+  <li><a href="/fr/../blog">English blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Paris Public Transports route planning webapp for Firefox OS</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-21T12:00:00+02:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><strong>TL;DR</strong> : RATP Open Data (GTFS) &ndash;> JSON graph &ndash;> Dijkstra with Priority Queue in JS &ndash;> Firefox OS webapp</p>
+
+<p>I released a proof of concept webapp for Firefox OS on the Firefox Market Place : <a href="https://marketplace.firefox.com/app/metro-bus-paris-route-plann-1">Metro Bus Paris Route Planning</a>.</p>
+
+<p>This app is based on the RATP Open Data (Paris Public Transports operator) and features a full client graph shortest path through the whole transport network (subway and bus).</p>
+
+<p><img src="http://www.rombdn.com/fxos-metrobusparis/images/screenshot1.png">
+<img src="http://www.rombdn.com/fxos-metrobusparis/images/screenshot2.png"></p>
+
+<p><strong>You can try it here</strong> : <a href="http://www.rombdn.com/fxos-metrobusparis/demo2/">http://www.rombdn.com/fxos-metrobusparis/demo2/</a></p>
+
+<p><strong>Source</strong> : <a href="https://github.com/rombdn/fxos-metrobusparis">https://github.com/rombdn/fxos-metrobusparis</a></p>
+
+<p><strong>Source for the DATA transformation</strong> : <a href="https://github.com/rombdn/ratp-gtfs-to-json">https://github.com/rombdn/ratp-gtfs-to-json</a></p>
+
+<p><em>External libs : Leaflet (map), Firefox OS Building Blocks, JQuery and Bootstrap (for autocompletion, didn&rsquo;t have time to implement mine)</em></p>
+
+<h1>Background</h1>
+
+<p>When the RATP opened their data earlier this year I thought it was a good opportunity to create a better route planning app : the available apps for iOS or Android, official or not, have multiple drawbacks :</p>
+
+<ul>
+<li>Slowness : the official app has full Ad splash screen</li>
+<li>No offline mode</li>
+<li>Not web apps : fragmentated user experience and unavailability on alternate plateforms like Firefox OS</li>
+</ul>
+
+
+<p>I started hacking with theses goals which put severe constraints :</p>
+
+<ul>
+<li>The full subway (metro) and bus graph, including edges with informations like durations, had to fit in less than a MB to minimize loading time</li>
+<li>The shortest path algorithm had to be fast (less than several seconds)</li>
+</ul>
+
+
+<h1>Conception and implementation</h1>
+
+<h2>DATA transformation (GTFS &ndash;> JSON Graph)</h2>
+
+<p>The original data were way too complex for my goals : 1GB of flat text files with informations on every route, trips, stop times for each day of the year&hellip;
+Some simplifications I made :</p>
+
+<ul>
+<li>Collapse stations : in the original DATA, stations are duplicated for every direction (route) and every line. This would have leaded to an overly complicated graph</li>
+<li>Average durations and wait times</li>
+</ul>
+
+
+<p>The final graph contains approximatly <em>6000 stations</em> (stops) and around <em>3 edges</em> per stations instead of <em>26000 stations</em> and <em>up to 20 edges</em> per station.</p>
+
+<p><strong>Link to data transformation Github project</strong> : <a href="https://github.com/rombdn/ratp-gtfs-to-json">ratp-gtfs-to-json</a></p>
+
+<h3>Original DATA</h3>
+
+<p>Full description : <a href="http://data.ratp.fr/?eID=ics_od_datastoredownload&amp;file=88">http://data.ratp.fr/?eID=ics_od_datastoredownload&amp;file=88</a></p>
+
+<p><em>routes.txt</em> : route_id, trip_id, type, line (directory)</p>
+
+<p><em>trips.txt</em> : route_id, trip_id</p>
+
+<p><em>stop_times.txt</em> : stop_id, trip_id, arrival_time</p>
+
+<p><em>stops.txt</em> : stop_id, stop_name</p>
+
+<h3>Graph output :</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">stop_id</span><span class="o">&gt;:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">name</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">name</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">loc</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">lat</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">latitude</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">lon</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">longitude</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">zip</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">zipcode</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">edges</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="s2">&quot;dest&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">dest_stop_id</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;dur&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">edge_duration</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">edge_type</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;open&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">hour_of_opening</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;close&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">hour_of_closing</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;line&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">line_number</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;dir&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">line_direction</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>                <span class="s2">&quot;freq&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">average_frequency</span><span class="o">&gt;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is achieved with 2 scripts : the first in C to crunch the big (650MB, millions of entry) stop_times.txt to create the raw edges, and the second in ruby to create the graph.</p>
+
+<h2>Javascript Dijkstra with Priority Queue</h2>
+
+<p>The funniest part :) It was also the most incertain since I had absolutely no ideas how much time the shortest path search would take, especially on mobiles.
+The first version was a straight forward implementation of the algorithm. It was in fact too slow so I decided to use a <em>priority queue</em>.</p>
+
+<p>I started from a neat binary heap implementation from the book <em>Eloquent Javascript</em> by Marijn Haverbeke <a href="http://eloquentjavascript.net/appendix2.html">link</a>.
+To use it in Dijkstra&rsquo;s algorithm I just added an index to each element.</p>
+
+<p><a href="https://github.com/rombdn/fxos-metrobusparis/blob/master/lib/binaryheap.js">Binary Heap with Keys source</a> (<code>idFunction</code> is the method called to get the index)</p>
+
+<h2>Firefox OS final app</h2>
+
+<p>This part should have been trivial but since I&rsquo;m not an expert in CSS the off canvas layout caused me a lot of headaches ;).
+It was in part because I really wanted my app to work on both Chrome, Firefox and the stock android browser (the app still doesn&rsquo;t show properly on the last one).</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Romain Beaudon</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-21T12:00:00+02:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.rombdn.com/fr/blog/2013/08/21/paris-transports-route-firefox-os/" data-via="rombdn" data-counturl="http://www.rombdn.com/fr/blog/2013/08/21/paris-transports-route-firefox-os/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/" title="Previous Post: Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome">&laquo; Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome</a>
+      
+      
+        <a class="basic-alignment right" href="/fr/blog/2013/09/11/backbone-leaflet-nightlife-app/" title="Next Post: Nightlife webapp built with Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design">Nightlife webapp built with Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+    <div style="text-align: right"><a href="/fr/../blog">EN</a> - <a href="/fr/blog">FR</a></div>
+</section><section>
+  <h1>About me</h1>
+  <p><img class="left" src="/fr/images/avatar.jpg" width="80" height="80"> <strong>Romain Beaudon</strong><br>
+    <em>Paris, France</em><br><br>
+
+    Je suis un consultant technique travaillant principalement dans les domaines de l'ingénierie des performances et de l'architecture. Sur mon temps libre je fais du développement web et de la musique</p>
+  <p>
+    <a href="http://github.com/rombdn">Github</a><br>
+    <a href="http://www.twitter.com/rombdn">Twitter</a><br>
+    <a href="http://www.linkedin.com/pub/romain-beaudon/18/199/223">LinkedIn</a>
+  </p>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/fr/blog/2013/09/11/backbone-leaflet-nightlife-app/">Nightlife webapp built with Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/08/21/paris-transports-route-firefox-os/">Paris Public Transports route planning webapp for Firefox OS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/05/21/identification-models-vues-backbone-dans-chrome-heap-profiler/">Identification des Models et des Vues Backbone dans le Heap Profiler de Chrome</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/05/21/analyse-des-fuites-memoire-dans-backbone-avec-le-heap-profiler-de-chrome/">Analyse des fuites memoire dans Backbone avec le Heap Profiler de Chrome</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/04/03/little-game-canvas-box2d/">Linerider clone with HTML5 and Box2D JS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/fr/blog/2013/03/28/performance-analysis-utilization-vs-saturation/">Performance analysis : impact of resources saturation on response time</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<h1>Twitter</h1>
+<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/rombdn" data-widget-id="336866910828363776">Tweets by @rombdn</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/rombdn">@rombdn</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'rombdn',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/fr/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/112678424699484797019?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Romain Beaudon -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
