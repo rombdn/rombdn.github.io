@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Romain Beaudon]]></title>
-  <link href="http://rombdn.github.io/atom.xml" rel="self"/>
-  <link href="http://rombdn.github.io/"/>
-  <updated>2014-06-24T17:44:59+02:00</updated>
-  <id>http://rombdn.github.io/</id>
+  <link href="http://www.rombdn.com/atom.xml" rel="self"/>
+  <link href="http://www.rombdn.com/"/>
+  <updated>2014-06-24T17:54:57+02:00</updated>
+  <id>http://www.rombdn.com/</id>
   <author>
     <name><![CDATA[Romain Beaudon]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design]]></title>
-    <link href="http://rombdn.github.io/blog/2013/09/11/backbone-leaflet/"/>
+    <link href="http://www.rombdn.com/blog/2013/09/11/backbone-leaflet/"/>
     <updated>2013-09-11T12:00:00+02:00</updated>
-    <id>http://rombdn.github.io/blog/2013/09/11/backbone-leaflet</id>
+    <id>http://www.rombdn.com/blog/2013/09/11/backbone-leaflet</id>
     <content type="html"><![CDATA[<p>Little webapp hacked with Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design.</p>
 
 <p>The landing page is a map with places around you fetched from the database (new places are eventually added through a request to OpenStreetMap).
@@ -54,9 +54,9 @@ When you click on a place you can see comments from other people and leave yours
   
   <entry>
     <title type="html"><![CDATA[Paris Public Transports route planning app]]></title>
-    <link href="http://rombdn.github.io/blog/2013/08/21/paris-transports-route-firefox-os/"/>
+    <link href="http://www.rombdn.com/blog/2013/08/21/paris-transports-route-firefox-os/"/>
     <updated>2013-08-21T12:00:00+02:00</updated>
-    <id>http://rombdn.github.io/blog/2013/08/21/paris-transports-route-firefox-os</id>
+    <id>http://www.rombdn.com/blog/2013/08/21/paris-transports-route-firefox-os</id>
     <content type="html"><![CDATA[<p><strong>TL;DR</strong> : RATP Open Data (GTFS) &ndash;> JSON graph &ndash;> Dijkstra with Priority Queue in JS &ndash;> Firefox OS webapp</p>
 
 <p>This is a Paris public transports route planning POC webapp.</p>
@@ -175,12 +175,12 @@ When you click on a place you can see comments from other people and leave yours
   
   <entry>
     <title type="html"><![CDATA[Identify Backbone Models in Chrome Heap Profiler]]></title>
-    <link href="http://rombdn.github.io/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/"/>
+    <link href="http://www.rombdn.com/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/"/>
     <updated>2013-05-21T16:15:00+02:00</updated>
-    <id>http://rombdn.github.io/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler</id>
+    <id>http://www.rombdn.com/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler</id>
     <content type="html"><![CDATA[<p><em>Note: this post is based on the idea of Named Constructors from the <a href="https://github.com/onsi/coccyx">Coccyx</a> library</em></p>
 
-<p>In <a href="http://rombdn.github.io/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler/">this post</a> I showed an example of a memory leak in Backbone, and how to troobleshoot it using the Chrome Heap Profiler :</p>
+<p>In <a href="http://www.rombdn.com/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler/">this post</a> I showed an example of a memory leak in Backbone, and how to troobleshoot it using the Chrome Heap Profiler :</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -217,11 +217,11 @@ When you click on a place you can see comments from other people and leave yours
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><img src="http://rombdn.github.io/images/backbonemem/child.png"></p>
+<p><img src="http://www.rombdn.com/images/backbonemem/child.png"></p>
 
 <p>But identifying these views is not easy because models extended from Backbone Model/View have their constructor named <code>child</code> in the Heap Profiler.</p>
 
-<p><img src="http://rombdn.github.io/images/backbonemem/childpath.png"></p>
+<p><img src="http://www.rombdn.com/images/backbonemem/childpath.png"></p>
 
 <p>A solution to this problem would be the possibility to name the constructors. Here is a simple hack to do that :</p>
 
@@ -288,7 +288,7 @@ When you click on a place you can see comments from other people and leave yours
 
 <p>Now the Views Constructors are correctly named in the Heap Profiler :</p>
 
-<p><img src="http://rombdn.github.io/images/backbonemem/zombie.png"></p>
+<p><img src="http://www.rombdn.com/images/backbonemem/zombie.png"></p>
 
 <p>Hope this will help!</p>
 ]]></content>
@@ -296,9 +296,9 @@ When you click on a place you can see comments from other people and leave yours
   
   <entry>
     <title type="html"><![CDATA[Backbone Memory leaks analysis with Chrome Heap Profiler]]></title>
-    <link href="http://rombdn.github.io/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler/"/>
+    <link href="http://www.rombdn.com/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler/"/>
     <updated>2013-05-21T15:53:00+02:00</updated>
-    <id>http://rombdn.github.io/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler</id>
+    <id>http://www.rombdn.com/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler</id>
     <content type="html"><![CDATA[<h2>Intro</h2>
 
 <p>The Heap Profiler in Chrome is a great tool to analyze memory usage in web applications. Here are some useful links :</p>
@@ -380,15 +380,15 @@ When you click on a place you can see comments from other people and leave yours
 
 <p>Console Ouptput :</p>
 
-<p><img src="http://rombdn.github.io/images/backbonemem/100xzombie.png"></p>
+<p><img src="http://www.rombdn.com/images/backbonemem/100xzombie.png"></p>
 
 <p>Nothing should appear in the console because every view is removed after its creation. As we can see this is not the case : the views are still catching <code>greetingEvent</code> and displaying a message.</p>
 
-<p>A heap snapshot confirm that all the ZombieViews are still here (extended Backbone models have their constructor named <code>child</code>, see <a href="http://rombdn.github.io/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/">this post</a> for a solution).</p>
+<p>A heap snapshot confirm that all the ZombieViews are still here (extended Backbone models have their constructor named <code>child</code>, see <a href="http://www.rombdn.com/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/">this post</a> for a solution).</p>
 
-<p><img src="http://rombdn.github.io/images/backbonemem/takesnapshot.png"></p>
+<p><img src="http://www.rombdn.com/images/backbonemem/takesnapshot.png"></p>
 
-<p><img src="http://rombdn.github.io/images/backbonemem/childpath.png"></p>
+<p><img src="http://www.rombdn.com/images/backbonemem/childpath.png"></p>
 
 <p>Why the views aren&rsquo;t removed ?</p>
 
@@ -396,7 +396,7 @@ When you click on a place you can see comments from other people and leave yours
 
 <p>If we take a heap snapshot we can see that the greetingEvent is in the retaining path of the views. This path prevent the GC to dispose the object.</p>
 
-<p><img src="http://rombdn.github.io/images/backbonemem/retainingpath.png"></p>
+<p><img src="http://www.rombdn.com/images/backbonemem/retainingpath.png"></p>
 
 <p>Let&rsquo;s modify the code with a call to <code>listenTo</code> instead of <code>Backbone.on</code>. With <code>listenTo</code> models can keep track of events binded so they can be unbinded by the remove method and thus allow the GC to dispose the attached views.</p>
 
@@ -409,20 +409,20 @@ When you click on a place you can see comments from other people and leave yours
 
 <p>This time nothing shows up in the console, which is the expected output : all the views where removed, none catched the event.</p>
 
-<p><em>Note: You may have noted that the views have their constructor named &lsquo;child&rsquo; which complicate identification, a solution is provided in <a href="http://rombdn.github.io/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/">this post</a>.</em></p>
+<p><em>Note: You may have noted that the views have their constructor named &lsquo;child&rsquo; which complicate identification, a solution is provided in <a href="http://www.rombdn.com/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/">this post</a>.</em></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Linerider clone with HTML5 Canvas and Box2D JS]]></title>
-    <link href="http://rombdn.github.io/blog/2013/04/03/game-canvas-box2d/"/>
+    <link href="http://www.rombdn.com/blog/2013/04/03/game-canvas-box2d/"/>
     <updated>2013-04-03T23:30:00+02:00</updated>
-    <id>http://rombdn.github.io/blog/2013/04/03/game-canvas-box2d</id>
+    <id>http://www.rombdn.com/blog/2013/04/03/game-canvas-box2d</id>
     <content type="html"><![CDATA[<p>Dog Sled is a little weekend project game hacked with HTML5 Canvas, Javascript and <a href="http://box2d.org">Box2D</a> :</p>
 
 <p><strong><a href="http://www.wajrak.com">Dog Sled</a></strong> &ndash; <a href="https://github.com/rombdn/dogsled">source</a></p>
 
-<p><img src="http://rombdn.github.io/images/dogsled/dogsled.jpg"></p>
+<p><img src="http://www.rombdn.com/images/dogsled/dogsled.jpg"></p>
 
 <h2>Code details</h2>
 
@@ -552,25 +552,25 @@ More up to date ports i didn&rsquo;t try : </p>
   
   <entry>
     <title type="html"><![CDATA[JMeter HTTP tips and examples]]></title>
-    <link href="http://rombdn.github.io/blog/2012/12/17/jmeter-http-tips-and-examples/"/>
+    <link href="http://www.rombdn.com/blog/2012/12/17/jmeter-http-tips-and-examples/"/>
     <updated>2012-12-17T16:00:00+01:00</updated>
-    <id>http://rombdn.github.io/blog/2012/12/17/jmeter-http-tips-and-examples</id>
+    <id>http://www.rombdn.com/blog/2012/12/17/jmeter-http-tips-and-examples</id>
     <content type="html"><![CDATA[<h2>Load all resources attached to a html file</h2>
 
-<p><img src="http://rombdn.github.io/images/jmeter/http-request.png" alt="alt text" /></p>
+<p><img src="http://www.rombdn.com/images/jmeter/http-request.png" alt="alt text" /></p>
 
 <p>Useful when working with frames to avoid one http request per frame (I use this a lot when scripting for PeopleSoft ERP).</p>
 
 <h2>Extract a value to a variable with a regular expression</h2>
 
-<p><img src="http://rombdn.github.io/images/jmeter/regex1.png" alt="alt text" /></p>
+<p><img src="http://www.rombdn.com/images/jmeter/regex1.png" alt="alt text" /></p>
 
 <p>You can use a Debug Listener to adjust the regexp.
 In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo; because the value to be extracted is in a frame.</p>
 
 <h2>Test a variable</h2>
 
-<p><img src="http://rombdn.github.io/images/jmeter/if-test.png" alt="alt text" /></p>
+<p><img src="http://www.rombdn.com/images/jmeter/if-test.png" alt="alt text" /></p>
 
 <p>In this example I verify that the Regular Expression hereabove worked.</p>
 
@@ -578,7 +578,7 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
 
 <p><em>First we get the number of values :</em></p>
 
-<p><img src="http://rombdn.github.io/images/jmeter/random-1.png" alt="alt text" /></p>
+<p><img src="http://www.rombdn.com/images/jmeter/random-1.png" alt="alt text" /></p>
 
 <p><em>Then we replace the parameter with our javascript :</em></p>
 
@@ -594,7 +594,7 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><img src="http://rombdn.github.io/images/jmeter/random-2.png" title="" alt="alt text" /></p>
+<p><img src="http://www.rombdn.com/images/jmeter/random-2.png" title="" alt="alt text" /></p>
 
 <p><em>Note : The double <code>$$</code> is due to variable names in PeopleSoft (<code>AF_PCC_WRK_SELECT_PB$1</code>, <code>AF_PCC_WRK_SELECT_PB$2</code>&hellip;)</em></p>
 ]]></content>
@@ -602,9 +602,9 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
   
   <entry>
     <title type="html"><![CDATA[Selenium Webdriver 2 with Python example]]></title>
-    <link href="http://rombdn.github.io/blog/2012/12/17/selenium-webdriver-2-with-python-example/"/>
+    <link href="http://www.rombdn.com/blog/2012/12/17/selenium-webdriver-2-with-python-example/"/>
     <updated>2012-12-17T12:00:00+01:00</updated>
-    <id>http://rombdn.github.io/blog/2012/12/17/selenium-webdriver-2-with-python-example</id>
+    <id>http://www.rombdn.com/blog/2012/12/17/selenium-webdriver-2-with-python-example</id>
     <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>

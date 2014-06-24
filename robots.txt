@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://rombdn.github.io/sitemap_full.xml
+Sitemap: http://www.rombdn.com/sitemap_full.xml
