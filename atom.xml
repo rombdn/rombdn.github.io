@@ -4,7 +4,7 @@
   <title><![CDATA[Romain Beaudon]]></title>
   <link href="http://www.rombdn.com/atom.xml" rel="self"/>
   <link href="http://www.rombdn.com/"/>
-  <updated>2018-01-12T17:54:10+01:00</updated>
+  <updated>2018-01-13T14:42:29+01:00</updated>
   <id>http://www.rombdn.com/</id>
   <author>
     <name><![CDATA[Romain Beaudon]]></name>
@@ -12,6 +12,721 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Random 2D dungeon generation in Unity using BSP (Binary Space Partitioning) trees]]></title>
+    <link href="http://www.rombdn.com/blog/2018/01/12/random-dungeon-bsp-unity/"/>
+    <updated>2018-01-12T00:00:00+01:00</updated>
+    <id>http://www.rombdn.com/blog/2018/01/12/random-dungeon-bsp-unity</id>
+    <content type="html"><![CDATA[<h2>Intro</h2>
+
+<p>The approach and algorithm is based on this <strong><a href="https://gamedev.stackexchange.com/a/82066">Stackexchange answer</a></strong>, and these related resources: <strong><a href="https://eskerda.com/bsp-dungeon-generation/">eskerda.com/bsp-dungeon-generation</a></strong> and <strong><a href="https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps--gamedev-12268">gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps</a></strong></p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-intro.png" alt="Unity intro" /></p>
+
+<p><em>The sprites used in this post come from existing games and are used here only for learning purpose.</em></p>
+
+<h2>Build the structure</h2>
+
+<p>Let&rsquo;s start with a new 2D project in Unity 5.</p>
+
+<p>Create a new Game Object called Board for holding the whole dungeon. On this game object create a new Script component called BoardManager. We&rsquo;ll code the dungeon generation logic into it.</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-new-project.png" alt="Unity new project" /></p>
+
+<p>I recommend you refer to the stackexchange answer above for the illustrations of the following steps.</p>
+
+<p>The idea of the algorithm is to start with a rectangular cell representing the whole dungeon. Then we&rsquo;ll split this dungeon in two sub-dungeons, with a randomly chosen splitting position. The process will be repeated again for each sub-dungeons recursively, until the sub-dungeons are approximately the desired size of a room.</p>
+
+<p>Our BoardManager script should look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">BoardManager</span> <span class="p">:</span> <span class="n">MonoBehaviour</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">public</span> <span class="kt">int</span> <span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">public</span> <span class="kt">int</span> <span class="n">minLeafSize</span><span class="p">,</span> <span class="n">maxLeafSize</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="k">class</span> <span class="nc">SubDungeon</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">SubDungeon</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">Rect</span> <span class="n">rect</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">Rect</span> <span class="n">room</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Rect</span><span class="p">(-</span><span class="m">1</span><span class="p">,-</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span> <span class="c1">// i.e null</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">int</span> <span class="n">debugId</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">debugCounter</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">SubDungeon</span><span class="p">(</span><span class="n">Rect</span> <span class="n">mrect</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">rect</span> <span class="p">=</span> <span class="n">mrect</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">debugId</span> <span class="p">=</span> <span class="n">debugCounter</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">debugCounter</span><span class="p">++;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">bool</span> <span class="nf">IAmLeaf</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">left</span> <span class="p">==</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">right</span> <span class="p">==</span> <span class="k">null</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">bool</span> <span class="nf">Split</span><span class="p">(</span><span class="kt">int</span> <span class="n">minLeafSize</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxLeafSize</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(!</span><span class="n">IAmLeaf</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// choose a vertical or horizontal split depending on the proportions</span>
+</span><span class='line'>      <span class="c1">// i.e. if too wide split vertically, or too long horizontally,</span>
+</span><span class='line'>      <span class="c1">// or if nearly square choose vertical or horizontal at random</span>
+</span><span class='line'>      <span class="kt">bool</span> <span class="n">splitH</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">/</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">&gt;=</span> <span class="m">1.25</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">splitH</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">/</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">&gt;=</span> <span class="m">1.25</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">splitH</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">splitH</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="m">0.0f</span><span class="p">,</span> <span class="m">1.0f</span><span class="p">)</span> <span class="p">&gt;</span> <span class="m">0.5</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Min</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span><span class="p">)</span> <span class="p">/</span> <span class="m">2</span> <span class="p">&lt;</span> <span class="n">minLeafSize</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Sub-dungeon &quot;</span> <span class="p">+</span> <span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot; will be a leaf&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">splitH</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// split so that the resulting sub-dungeons widths are not too small</span>
+</span><span class='line'>        <span class="c1">// (since we are splitting horizontally)</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">split</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">minLeafSize</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">-</span> <span class="n">minLeafSize</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">left</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">split</span><span class="p">));</span>
+</span><span class='line'>        <span class="n">right</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span>
+</span><span class='line'>          <span class="k">new</span> <span class="nf">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span> <span class="p">+</span> <span class="n">split</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">-</span> <span class="n">split</span><span class="p">));</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">split</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">minLeafSize</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">-</span> <span class="n">minLeafSize</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">left</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span><span class="p">));</span>
+</span><span class='line'>        <span class="n">right</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span>
+</span><span class='line'>          <span class="k">new</span> <span class="nf">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span> <span class="p">+</span> <span class="n">split</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">-</span> <span class="n">split</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span><span class="p">));</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="k">void</span> <span class="nf">CreateBSP</span><span class="p">(</span><span class="n">SubDungeon</span> <span class="n">subDungeon</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Splitting sub-dungeon &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot;: &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">IAmLeaf</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// if the sub-dungeon is too large</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">&gt;</span> <span class="n">maxLeafSize</span>
+</span><span class='line'>        <span class="p">||</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">&gt;</span> <span class="n">maxLeafSize</span>
+</span><span class='line'>        <span class="p">||</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="m">0.0f</span><span class="p">,</span><span class="m">1.0f</span><span class="p">)</span> <span class="p">&gt;</span> <span class="m">0.25</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">Split</span> <span class="p">(</span><span class="n">minLeafSize</span><span class="p">,</span> <span class="n">maxLeafSize</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Splitted sub-dungeon &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot; in &quot;</span>
+</span><span class='line'>            <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">left</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot;: &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">left</span><span class="p">.</span><span class="n">rect</span> <span class="p">+</span> <span class="s">&quot;, &quot;</span>
+</span><span class='line'>            <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">right</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot;: &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">right</span><span class="p">.</span><span class="n">rect</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="n">CreateBSP</span><span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">left</span><span class="p">);</span>
+</span><span class='line'>          <span class="n">CreateBSP</span><span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">right</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">void</span> <span class="nf">Start</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">SubDungeon</span> <span class="n">rootSubDungeon</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">CreateBSP</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then set the public variables for board and rooms size in the Unity editor.</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-editor-variables.png" alt="Variables in editor" /></p>
+
+<p>When launching the game you should have something like this in the console :</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-split.png" alt="Unity split" /></p>
+
+<h2>Create the rooms</h2>
+
+<p>We now have a tree structure with the leaves corresponding to the smallest sub-dungeons. In each of these leaves we&rsquo;ll now create a room with a random size.</p>
+
+<p>Add the following variable and method to the SubDungeon class :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>  <span class="k">public</span> <span class="k">class</span> <span class="nc">SubDungeon</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">Rect</span> <span class="n">room</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Rect</span><span class="p">(-</span><span class="m">1</span><span class="p">,-</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span> <span class="c1">// i.e null</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">CreateRoom</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">left</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">left</span><span class="p">.</span><span class="n">CreateRoom</span> <span class="p">();</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">right</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">right</span><span class="p">.</span><span class="n">CreateRoom</span> <span class="p">();</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">IAmLeaf</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">roomWidth</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">-</span> <span class="m">2</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">roomHeight</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">/</span> <span class="m">2</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">-</span> <span class="m">2</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">roomX</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">-</span> <span class="n">roomWidth</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">roomY</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">-</span> <span class="n">roomHeight</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// room position will be absolute in the board, not relative to the sub-dungeon</span>
+</span><span class='line'>        <span class="n">room</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span> <span class="p">+</span> <span class="n">roomX</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span> <span class="p">+</span> <span class="n">roomY</span><span class="p">,</span> <span class="n">roomWidth</span><span class="p">,</span> <span class="n">roomHeight</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Created room &quot;</span> <span class="p">+</span> <span class="n">room</span> <span class="p">+</span> <span class="s">&quot; in sub-dungeon &quot;</span> <span class="p">+</span> <span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot; &quot;</span> <span class="p">+</span> <span class="n">rect</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And call it in the Start() method :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>  <span class="k">void</span> <span class="nf">Start</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">SubDungeon</span> <span class="n">rootSubDungeon</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">CreateBSP</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">rootSubDungeon</span><span class="p">.</span><span class="n">CreateRoom</span> <span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The output console should look like this:</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-rooms.png" alt="Unity rooms created console" /></p>
+
+<h2>Drawing the rooms &frac12;: add a sprite for the floor</h2>
+
+<p>Instead of relying on console output, it would be more intuitive to start having a visual representation. First thing is to add a sprite for the floor of the rooms. You can grab this one and add it as an asset in your project: <img src="http://www.rombdn.com/images/unitydungeon/sprite-floor.png" alt="Room sprite" />. Also be careful to set the <em>Pixels Per Unit</em> to exactly the size of the sprite (16 for this sprite), so that the sprite will cover exactly a square in the board.</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-sprite-floor.png" alt="Room sprite in Unity" /></p>
+
+<p>Next create a Prefab with this sprite (drag and drop it on the scene screen, then drag and drop back the object in the assets):</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-floor-prefab.png" alt="Floor prefab" /></p>
+
+<p>In the script we&rsquo;ll need to add a public GameObject variable to hold this prefab:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">BoardManager</span> <span class="p">:</span> <span class="n">MonoBehaviour</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//...</span>
+</span><span class='line'>  <span class="k">public</span> <span class="n">GameObject</span> <span class="n">floorTile</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then in the editor drag and drop the prefab to set it.</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-floor-prefab-variable.png" alt="Floor prefab variable editor" /></p>
+
+<h2>Drawing the rooms 2/2: write the code</h2>
+
+<p>Back in the script we add a method to draw the rooms. Also as we draw the rooms we&rsquo;ll register the drawed squares in a variable representing the board called gridPositions. This variable is not really useful at first but will be really useful when starting to construct a game above this basic structure.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">BoardManager</span> <span class="p">:</span> <span class="n">MonoBehaviour</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//...</span>
+</span><span class='line'>  <span class="k">private</span> <span class="n">GameObject</span><span class="p">[,]</span> <span class="n">gridPositions</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="k">void</span> <span class="nf">DrawRooms</span><span class="p">(</span><span class="n">SubDungeon</span> <span class="n">subDungeon</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">IAmLeaf</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">room</span><span class="p">.</span><span class="n">x</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">room</span><span class="p">.</span><span class="n">xMax</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">room</span><span class="p">.</span><span class="n">y</span><span class="p">;</span> <span class="n">j</span> <span class="p">&lt;</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">room</span><span class="p">.</span><span class="n">yMax</span><span class="p">;</span> <span class="n">j</span><span class="p">++)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">GameObject</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">Instantiate</span> <span class="p">(</span><span class="n">floorTile</span><span class="p">,</span> <span class="k">new</span> <span class="n">Vector3</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="m">0f</span><span class="p">),</span> <span class="n">Quaternion</span><span class="p">.</span><span class="n">identity</span><span class="p">)</span> <span class="k">as</span> <span class="n">GameObject</span><span class="p">;</span>
+</span><span class='line'>          <span class="n">instance</span><span class="p">.</span><span class="n">transform</span><span class="p">.</span><span class="n">SetParent</span> <span class="p">(</span><span class="n">transform</span><span class="p">);</span>
+</span><span class='line'>          <span class="n">gridPositions</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">DrawRooms</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">left</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">DrawRooms</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">right</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And in the Start() method initialize gridPositions and call DrawRooms on the root:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>  <span class="k">void</span> <span class="nf">Start</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">gridPositions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GameObject</span><span class="p">[</span><span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">DrawRooms</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should get something like this in the scene view :</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-rooms-drawed.png" alt="Rooms drawed" /></p>
+
+<p>Now that we have a visual feedback it&rsquo;s also easier to play with the parameters :</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-rooms-drawed-big.png" alt="Rooms drawed big" /></p>
+
+<h2>Connect the rooms: create corridors between rooms</h2>
+
+<p>Isolated rooms are not very useful so we&rsquo;ll add corridors between them. To do so, we&rsquo;ll connect each leaf to its sibling. Then going up one level in the tree, we&rsquo;ll repeat the process to connect parents sub-dungeons, until finally we connect the two initial sub-dungeons (see the stackexchange answer for illustrations).</p>
+
+<p>Add <code>using System.Collections.Generic;</code> at the beginning of the script, then in the SubDungeon class add:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>  <span class="k">public</span> <span class="k">class</span> <span class="nc">SubDungeon</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Rect</span><span class="p">&gt;</span> <span class="n">corridors</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Rect</span><span class="p">&gt;();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&rsquo;ll also need a method to get the room of a sub-dungeon. If the sub-dungeon is not a leaf (i.e. doesn&rsquo;t contain a room), the method will return the room of a child.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>  <span class="k">public</span> <span class="k">class</span> <span class="nc">SubDungeon</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">Rect</span> <span class="nf">GetRoom</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">IAmLeaf</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">room</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">left</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">Rect</span> <span class="n">lroom</span> <span class="p">=</span> <span class="n">left</span><span class="p">.</span><span class="n">GetRoom</span> <span class="p">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">lroom</span><span class="p">.</span><span class="n">x</span> <span class="p">!=</span> <span class="p">-</span><span class="m">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="n">lroom</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">right</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">Rect</span> <span class="n">rroom</span> <span class="p">=</span> <span class="n">right</span><span class="p">.</span><span class="n">GetRoom</span> <span class="p">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">rroom</span><span class="p">.</span><span class="n">x</span> <span class="p">!=</span> <span class="p">-</span><span class="m">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="n">rroom</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// workaround non nullable structs</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="nf">Rect</span> <span class="p">(-</span><span class="m">1</span><span class="p">,</span> <span class="p">-</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And now the method to create the corridor between rooms:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">CreateCorridorBetween</span><span class="p">(</span><span class="n">SubDungeon</span> <span class="n">left</span><span class="p">,</span> <span class="n">SubDungeon</span> <span class="n">right</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">Rect</span> <span class="n">lroom</span> <span class="p">=</span> <span class="n">left</span><span class="p">.</span><span class="n">GetRoom</span> <span class="p">();</span>
+</span><span class='line'>  <span class="n">Rect</span> <span class="n">rroom</span> <span class="p">=</span> <span class="n">right</span><span class="p">.</span><span class="n">GetRoom</span> <span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">&quot;Creating corridor(s) between &quot;</span> <span class="p">+</span> <span class="n">left</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot;(&quot;</span> <span class="p">+</span> <span class="n">lroom</span> <span class="p">+</span> <span class="s">&quot;) and &quot;</span> <span class="p">+</span> <span class="n">right</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot; (&quot;</span> <span class="p">+</span> <span class="n">rroom</span> <span class="p">+</span> <span class="s">&quot;)&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// attach the corridor to a random point in each room</span>
+</span><span class='line'>  <span class="n">Vector2</span> <span class="n">lpoint</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Vector2</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">lroom</span><span class="p">.</span><span class="n">x</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">lroom</span><span class="p">.</span><span class="n">xMax</span> <span class="p">-</span> <span class="m">1</span><span class="p">),</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">lroom</span><span class="p">.</span><span class="n">y</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">lroom</span><span class="p">.</span><span class="n">yMax</span> <span class="p">-</span> <span class="m">1</span><span class="p">));</span>
+</span><span class='line'>  <span class="n">Vector2</span> <span class="n">rpoint</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Vector2</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">rroom</span><span class="p">.</span><span class="n">x</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">rroom</span><span class="p">.</span><span class="n">xMax</span> <span class="p">-</span> <span class="m">1</span><span class="p">),</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">rroom</span><span class="p">.</span><span class="n">y</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="n">rroom</span><span class="p">.</span><span class="n">yMax</span> <span class="p">-</span> <span class="m">1</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// always be sure that left point is on the left to simplify the code</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">lpoint</span><span class="p">.</span><span class="n">x</span> <span class="p">&gt;</span> <span class="n">rpoint</span><span class="p">.</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Vector2</span> <span class="n">temp</span> <span class="p">=</span> <span class="n">lpoint</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">lpoint</span> <span class="p">=</span> <span class="n">rpoint</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">rpoint</span> <span class="p">=</span> <span class="n">temp</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">w</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">lpoint</span><span class="p">.</span><span class="n">x</span> <span class="p">-</span> <span class="n">rpoint</span><span class="p">.</span><span class="n">x</span><span class="p">);</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">h</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">lpoint</span><span class="p">.</span><span class="n">y</span> <span class="p">-</span> <span class="n">rpoint</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;lpoint: &quot;</span> <span class="p">+</span> <span class="n">lpoint</span> <span class="p">+</span> <span class="s">&quot;, rpoint: &quot;</span> <span class="p">+</span> <span class="n">rpoint</span> <span class="p">+</span> <span class="s">&quot;, w: &quot;</span> <span class="p">+</span> <span class="n">w</span> <span class="p">+</span> <span class="s">&quot;, h: &quot;</span> <span class="p">+</span> <span class="n">h</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// if the points are not aligned horizontally</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">w</span> <span class="p">!=</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// choose at random to go horizontal then vertical or the opposite</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span> <span class="p">&gt;</span> <span class="m">2</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// add a corridor to the right</span>
+</span><span class='line'>      <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">lpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">lpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// if left point is below right point go up</span>
+</span><span class='line'>      <span class="c1">// otherwise go down</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">h</span> <span class="p">&lt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">rpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">lpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">h</span><span class="p">)));</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">rpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">lpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="p">-</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">h</span><span class="p">)));</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// go up or down</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">h</span> <span class="p">&lt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">lpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">lpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">h</span><span class="p">)));</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">lpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">h</span><span class="p">)));</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// then go right</span>
+</span><span class='line'>      <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">lpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// if the points are aligned horizontally</span>
+</span><span class='line'>    <span class="c1">// go up or down depending on the positions</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">h</span> <span class="p">&lt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">lpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">lpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">h</span><span class="p">)));</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">corridors</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">rpoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">rpoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="n">Mathf</span><span class="p">.</span><span class="n">Abs</span> <span class="p">(</span><span class="n">h</span><span class="p">)));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Corridors: &quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">foreach</span> <span class="p">(</span><span class="n">Rect</span> <span class="n">corridor</span> <span class="k">in</span> <span class="n">corridors</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;corridor: &quot;</span> <span class="p">+</span> <span class="n">corridor</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should see the corridors being created in the console:</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-corridors-console.png" alt="Corridors console" /></p>
+
+<p>It&rsquo;s hard to see visualize without the corridors being drawed but for this example it would look like this:</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-corridors-drawed.png" alt="Corridors drawed" /></p>
+
+<h2>Draw the corridors &frac12;: add the corridor sprite</h2>
+
+<p>Same as before for the rooms we&rsquo;ll need a sprite <img src="http://www.rombdn.com/images/unitydungeon/sprite-corridor.png" alt="Corridor sprite" />, a prefab in Unity and variable to hold the prefab:</p>
+
+<p>Remember to correctly set Pixels Per Unit setting:</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-sprite-corridor-settings.png" alt="Corridor sprite" /></p>
+
+<p>Next create a prefab:</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-corridor-prefab.png" alt="Corridor prefab" /></p>
+
+<p>And add a variable in the code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">BoardManager</span> <span class="p">:</span> <span class="n">MonoBehaviour</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//...</span>
+</span><span class='line'>  <span class="k">public</span> <span class="n">GameObject</span> <span class="n">corridorTile</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And finally set the variable in the editor:</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-corridor-variable.png" alt="Corridor variable editor" /></p>
+
+<h2>Draw the corridors 2/2: write the code</h2>
+
+<p>The drawing function will be quite similar to the one for the rooms:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">BoardManager</span> <span class="p">:</span> <span class="n">MonoBehaviour</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">void</span> <span class="nf">DrawCorridors</span><span class="p">(</span><span class="n">SubDungeon</span> <span class="n">subDungeon</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">DrawCorridors</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">left</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">DrawCorridors</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">right</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="n">Rect</span> <span class="n">corridor</span> <span class="k">in</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">corridors</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">corridor</span><span class="p">.</span><span class="n">x</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">corridor</span><span class="p">.</span><span class="n">xMax</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">corridor</span><span class="p">.</span><span class="n">y</span><span class="p">;</span> <span class="n">j</span> <span class="p">&lt;</span> <span class="n">corridor</span><span class="p">.</span><span class="n">yMax</span><span class="p">;</span> <span class="n">j</span><span class="p">++)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">gridPositions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">GameObject</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">Instantiate</span> <span class="p">(</span><span class="n">corridorTile</span><span class="p">,</span> <span class="k">new</span> <span class="n">Vector3</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="m">0f</span><span class="p">),</span> <span class="n">Quaternion</span><span class="p">.</span><span class="n">identity</span><span class="p">)</span> <span class="k">as</span> <span class="n">GameObject</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">instance</span><span class="p">.</span><span class="n">transform</span><span class="p">.</span><span class="n">SetParent</span> <span class="p">(</span><span class="n">transform</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">gridPositions</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the Start() method, you can call DrawCorridors before DrawRooms to better see what is going on:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>  <span class="k">void</span> <span class="nf">Start</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">SubDungeon</span> <span class="n">rootSubDungeon</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">CreateBSP</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">rootSubDungeon</span><span class="p">.</span><span class="n">CreateRoom</span> <span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">gridPositions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GameObject</span><span class="p">[</span><span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">DrawCorridors</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">DrawRooms</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-corridors-drawed-2.png" alt="Corridor drawed 2" /></p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-corridors-drawed-above.png" alt="Corridor drawed above" /></p>
+
+<p>If DrawRooms is called before :</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-corridors-drawed-below.png" alt="Corridor drawed below" /></p>
+
+<p>Now that the random generation is working future improvements could be adding walls and of course a player sprite and controls and enemies.</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-enemies.png" alt="Dungeon with enemies" /></p>
+
+<p>And with a camera on the player and some further improvements it can become the basis of a simple rogue-like or dungeon crawler:</p>
+
+<p><img src="http://www.rombdn.com/images/unitydungeon/unity-game.png" alt="Dungeon with enemies" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design]]></title>

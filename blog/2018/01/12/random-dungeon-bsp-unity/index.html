@@ -5,13 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Romain Beaudon</title>
+  <title>Random 2D dungeon generation in Unity using BSP (Binary Space Partitioning) trees - Romain Beaudon</title>
   <meta name="author" content="Romain Beaudon">
 
   
-  <meta name="description" content="Personal Blog">
+  <meta name="description" content="Random 2D dungeon generation in Unity using BSP">
   
-  <meta name="keywords" content="development, coding, test, performance, architecture, web development, javascript, html, mobile">
+  <meta name="keywords" content="unity, games, algorithms">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.rombdn.com">
+  <link rel="canonical" href="http://www.rombdn.com/blog/2018/01/12/random-dungeon-bsp-unity">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Romain Beaudon" type="application/atom+xml">
@@ -73,15 +73,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2018/01/12/random-dungeon-bsp-unity/">Random 2D dungeon generation in Unity using BSP (Binary Space Partitioning) trees</a></h1>
+      <h1 class="entry-title">Random 2D dungeon generation in Unity using BSP (Binary Space Partitioning) trees</h1>
     
     
       <p class="meta">
@@ -104,7 +101,7 @@
   </header>
 
 
-  <div class="entry-content"><h2>Intro</h2>
+<div class="entry-content"><h2>Intro</h2>
 
 <p>The approach and algorithm is based on this <strong><a href="https://gamedev.stackexchange.com/a/82066">Stackexchange answer</a></strong>, and these related resources: <strong><a href="https://eskerda.com/bsp-dungeon-generation/">eskerda.com/bsp-dungeon-generation</a></strong> and <strong><a href="https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps--gamedev-12268">gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps</a></strong></p>
 
@@ -812,88 +809,16 @@
 
 <p><img src="/images/unitydungeon/unity-game.png" alt="Dungeon with enemies" /></p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/11/backbone-leaflet/">Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Romain Beaudon</span></span>
 
-<time datetime="2013-09-11T12:00:00+02:00" pubdate data-updated="true">Sep 11<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Little webapp hacked with Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design.</p>
-
-<p>The landing page is a map with places around you fetched from the database (new places are eventually added through a request to OpenStreetMap).
-When you click on a place you can see comments from other people and leave yours.</p>
-
-<p><strong><a href="http://www.barotweet.com">Live Demo</a></strong> (currently down)</p>
-
-<p><strong><a href="http://github.com/rombdn/barotweet">Github repo</a></strong></p>
-
-<p>Mobile</p>
-
-<p><img src="http://www.rombdn.com/barotweet/img/screenshot2.png"></p>
-
-<p>Desktop</p>
-
-<p><img src="http://www.rombdn.com/barotweet/img/screenshot1.png"></p>
-
-<p>Technically the app features these concepts/technologies :</p>
-
-<ul>
-<li><a href="http://backbonejs.org">Backbone</a></li>
-<li>Twitter Bootstrap</li>
-<li><a href="http://nodejs.org">Node.js</a>/<a href="http://expressjs.com">Express</a></li>
-<li><a href="http://www.mongodb.org">MongoDB</a></li>
-<li><a href="https://github.com/rombdn/barotweet/blob/master/server/routes/route-base.js">Client/Server code sharing</a> (by reusing Backbone models in Node.js for validation)</li>
-<li><a href="http://requirejs.org">Require.js</a></li>
-<li>Responsive Design</li>
-<li><a href="http://leafletjs.com">Leaflet</a> with <a href="http://osm.org">OpenStreetMap</a></li>
-<li>Alerts and messages bus</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/21/paris-transports-route-firefox-os/">Paris Public Transports route planning app</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -905,793 +830,36 @@ When you click on a place you can see comments from other people and leave yours
   
 
 
-<time datetime="2013-08-21T12:00:00+02:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>TL;DR</strong> : RATP Open Data (GTFS) &ndash;> JSON graph &ndash;> Dijkstra with Priority Queue in JS &ndash;> Firefox OS webapp</p>
-
-<p>This is a Paris public transports route planning POC webapp.</p>
-
-<p>DATA come from RATP (Paris Public Transports operator).</p>
-
-<p><img src="http://www.rombdn.com/fxos-metrobusparis/images/screenshot1.png">
-<img src="http://www.rombdn.com/fxos-metrobusparis/images/screenshot2.png"></p>
-
-<p><strong>You can try it here</strong> : <a href="http://www.rombdn.com/fxos-metrobusparis/demo2/">http://www.rombdn.com/fxos-metrobusparis/demo2/</a></p>
-
-<p><strong>Source</strong> : <a href="https://github.com/rombdn/fxos-metrobusparis">https://github.com/rombdn/fxos-metrobusparis</a></p>
-
-<p><strong>Source for the DATA transformation</strong> : <a href="https://github.com/rombdn/ratp-gtfs-to-json">https://github.com/rombdn/ratp-gtfs-to-json</a></p>
-
-<p><em>External libs : Leaflet (map), Firefox OS Building Blocks, JQuery and Bootstrap (for autocompletion, didn&rsquo;t have time to implement mine)</em></p>
-
-<h1>Background</h1>
-
-<p>When the RATP opened their data earlier this year I thought it was a good opportunity to create an offline route planning app acrosse the whole public transportation network.</p>
-
-<p>The technical challenges were :
- &ndash; The full subway (metro) and bus graph, including edges with informations like durations, had to fit in less than a MB to minimize loading time
- &ndash; The shortest path search had to be fast.</p>
-
-<h1>Conception and implementation</h1>
-
-<h2>DATA transformation (GTFS &ndash;> JSON Graph)</h2>
-
-<p>The DATA provided by RATP are 1GB of flat text files with informations on every route, trips, stop times for each day of the year&hellip;</p>
-
-<p>Some simplifications I made :</p>
-
-<ul>
-<li>Collapse stations : in the original DATA, stations are duplicated for every direction (route) and every line. This would have leaded to an overly complicated graph</li>
-<li>Average durations and wait times</li>
-</ul>
-
-
-<p>The final graph contains approximatly <em>6000 stations</em> (stops) and around <em>3 edges</em> per stations instead of <em>26000 stations</em> and <em>up to 20 edges</em> per station.</p>
-
-<p><strong>Link to data transformation Github project</strong> : <a href="https://github.com/rombdn/ratp-gtfs-to-json">ratp-gtfs-to-json</a></p>
-
-<h3>Original DATA</h3>
-
-<p>Full description : <a href="http://data.ratp.fr/?eID=ics_od_datastoredownload&amp;file=88">http://data.ratp.fr/?eID=ics_od_datastoredownload&amp;file=88</a></p>
-
-<p><em>routes.txt</em> : route_id, trip_id, type, line (directory)</p>
-
-<p><em>trips.txt</em> : route_id, trip_id</p>
-
-<p><em>stop_times.txt</em> : stop_id, trip_id, arrival_time</p>
-
-<p><em>stops.txt</em> : stop_id, stop_name</p>
-
-<h3>Graph output :</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="nx">stop_id</span><span class="o">&gt;:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">name</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">name</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">loc</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">lat</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">latitude</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">lon</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">longitude</span><span class="o">&gt;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="nx">zip</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">zipcode</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">edges</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="s2">&quot;dest&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">dest_stop_id</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;dur&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">edge_duration</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">edge_type</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;open&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">hour_of_opening</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;close&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">hour_of_closing</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;line&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">line_number</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;dir&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">line_direction</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>                <span class="s2">&quot;freq&quot;</span><span class="o">:</span> <span class="o">&lt;</span><span class="nx">average_frequency</span><span class="o">&gt;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">]</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is achieved with 2 scripts : the first in C to parse the file stop_times.txt (650MB, millions of entry) to create the raw edges, and the second in ruby to create the graph (JSON format).</p>
-
-<h2>Javascript Shortest Path with Priority Queue</h2>
-
-<p>The first version was a straight forward implementation of Dijkstra&rsquo;s algorithm. It was too slow so I decided to use a <em>priority queue</em>.</p>
-
-<p>I started from a binary heap implementation from the book <em>Eloquent Javascript</em> by Marijn Haverbeke <a href="http://eloquentjavascript.net/appendix2.html">link</a>.</p>
-
-<p><a href="https://github.com/rombdn/fxos-metrobusparis/blob/master/lib/binaryheap.js">Binary Heap with Keys source</a> (<code>idFunction</code> is the method called to get the index).</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2018-01-12T00:00:00+01:00" pubdate data-updated="true">Jan 12<span>th</span>, 2018</time>
       
-  <header>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/">Identify Backbone Models in Chrome Heap Profiler</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
+      <div class="sharing">
   
-
-
-<time datetime="2013-05-21T16:15:00+02:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>Note: this post is based on the idea of Named Constructors from the <a href="https://github.com/onsi/coccyx">Coccyx</a> library</em></p>
-
-<p>In <a href="/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler/">this post</a> I showed an example of a memory leak in Backbone, and how to troobleshoot it using the Chrome Heap Profiler :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sayFoo</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">sayFoo</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZombieView</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">view</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Backbone</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="/images/backbonemem/child.png"></p>
-
-<p>But identifying these views is not easy because models extended from Backbone Model/View have their constructor named <code>child</code> in the Heap Profiler.</p>
-
-<p><img src="/images/backbonemem/childpath.png"></p>
-
-<p>A solution to this problem would be the possibility to name the constructors. Here is a simple hack to do that :</p>
-
-<p>In backbone.js, around line 1541 :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// The constructor function for the new subclass is either defined by you</span>
-</span><span class='line'><span class="c1">// (the &quot;constructor&quot; property in your `extend` definition), or defaulted</span>
-</span><span class='line'><span class="c1">// by us to simply call the parent&#39;s constructor.</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">protoProps</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructor&#39;</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="p">};</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Simply add a case for an optional constructor name :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">protoProps</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructor&#39;</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">protoProps</span><span class="p">,</span> <span class="s1">&#39;constructorName&#39;</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;child = function &quot;</span> <span class="o">+</span> <span class="nx">protoProps</span><span class="p">.</span><span class="nx">constructorName</span> <span class="o">+</span> <span class="s2">&quot;() { return parent.apply(this, arguments); };&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">child</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="k">return</span> <span class="nx">parent</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="p">};</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><em>Note: due to the use of &lsquo;eval&rsquo; it is not safe in production&hellip;</em></p>
-
-<p>Now we can add a &lsquo;constructorName&rsquo; in our models/views.</p>
-
-<h3>Example with the leaking view from part 1</h3>
-
-<p>Adding a constructor name :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-</span><span class='line'>      <span class="nx">constructorName</span><span class="o">:</span> <span class="s1">&#39;Zombie&#39;</span><span class="p">,</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now the Views Constructors are correctly named in the Heap Profiler :</p>
-
-<p><img src="/images/backbonemem/zombie.png"></p>
-
-<p>Hope this will help!</p>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.rombdn.com/blog/2018/01/12/random-dungeon-bsp-unity/" data-via="rombdn" data-counturl="http://www.rombdn.com/blog/2018/01/12/random-dungeon-bsp-unity/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
-  
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/05/21/backbone-memory-leaks-analysis-with-chrome-heap-profiler/">Backbone Memory leaks analysis with Chrome Heap Profiler</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-21T15:53:00+02:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Intro</h2>
-
-<p>The Heap Profiler in Chrome is a great tool to analyze memory usage in web applications. Here are some useful links :</p>
-
-<ul>
-<li><a href="https://developers.google.com/chrome-developer-tools/docs/memory-analysis-101">Memory Analysis 101</a></li>
-<li><a href="https://developers.google.com/chrome-developer-tools/docs/heap-profiling">Heap Profiling</a></li>
-</ul>
-
-
-<p>Why do we have to worry about memory management in JS when there is a Garbage Collector ? Because memory leaks can still happen : as long as an object is referenced by another it cannot be disposed by the GC. These references are &ldquo;Retaining Paths&rdquo; in the Heap Profiler.</p>
-
-<p>A common source of these problems are event binding : events are references, which prevent object to be destroyed after they are removed from the DOM. This can happen with Backbone Views.</p>
-
-<h2>Example</h2>
-
-<p>Here is a simple example (using the Backbone global object as an event mediator) :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;jquery.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;underscore.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;backbone.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;zombieViews.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">ZombieView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-</span><span class='line'>            <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">Backbone</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sayFoo</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="nx">sayFoo</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZombieView</span><span class="p">();</span>
-</span><span class='line'>            <span class="nx">view</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">Backbone</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;greetingEvent&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/body&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/html&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Console Ouptput :</p>
-
-<p><img src="/images/backbonemem/100xzombie.png"></p>
-
-<p>Nothing should appear in the console because every view is removed after its creation. As we can see this is not the case : the views are still catching <code>greetingEvent</code> and displaying a message.</p>
-
-<p>A heap snapshot confirm that all the ZombieViews are still here (extended Backbone models have their constructor named <code>child</code>, see <a href="/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/">this post</a> for a solution).</p>
-
-<p><img src="/images/backbonemem/takesnapshot.png"></p>
-
-<p><img src="/images/backbonemem/childpath.png"></p>
-
-<p>Why the views aren&rsquo;t removed ?</p>
-
-<h2>Troobleshoot</h2>
-
-<p>If we take a heap snapshot we can see that the greetingEvent is in the retaining path of the views. This path prevent the GC to dispose the object.</p>
-
-<p><img src="/images/backbonemem/retainingpath.png"></p>
-
-<p>Let&rsquo;s modify the code with a call to <code>listenTo</code> instead of <code>Backbone.on</code>. With <code>listenTo</code> models can keep track of events binded so they can be unbinded by the remove method and thus allow the GC to dispose the attached views.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//Backbone.on(&#39;greetingEvent&#39;, this.sayFoo, this);</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="nx">Backbone</span><span class="p">,</span> <span class="s1">&#39;greetingEvent&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sayFoo</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This time nothing shows up in the console, which is the expected output : all the views where removed, none catched the event.</p>
-
-<p><em>Note: You may have noted that the views have their constructor named &lsquo;child&rsquo; which complicate identification, a solution is provided in <a href="/blog/2013/05/21/identify-backbone-models-in-chrome-heap-profiler/">this post</a>.</em></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+        <a class="basic-alignment left" href="/blog/2013/09/11/backbone-leaflet/" title="Previous Post: Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design">&laquo; Backbone, Leaflet, Bootstrap, Node.js and MongoDB using Responsive Design</a>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/04/03/game-canvas-box2d/">Linerider clone with HTML5 Canvas and Box2D JS</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-03T23:30:00+02:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Dog Sled is a little weekend project game hacked with HTML5 Canvas, Javascript and <a href="http://box2d.org">Box2D</a> :</p>
-
-<p><strong><a href="http://www.wajrak.com">Dog Sled</a></strong> &ndash; <a href="https://github.com/rombdn/dogsled">source</a></p>
-
-<p><img src="/images/dogsled/dogsled.jpg"></p>
-
-<h2>Code details</h2>
-
-<h3>Initialisations</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//...</span>
-</span><span class='line'><span class="nx">dog_initcanvas</span><span class="p">();</span>
-</span><span class='line'><span class="nx">dog_initsound</span><span class="p">();</span>
-</span><span class='line'><span class="nx">dog_events</span><span class="p">();</span> <span class="c1">//mouse and keyboard</span>
-</span><span class='line'><span class="nx">dog_initworld</span><span class="p">();</span>
-</span><span class='line'><span class="nx">dog_setupcollisions</span><span class="p">();</span>
-</span><span class='line'><span class="nx">dog_initdraw</span><span class="p">();</span>
-</span><span class='line'><span class="nx">dog_update</span><span class="p">();</span>
-</span><span class='line'><span class="c1">//...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Collisions</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//...</span>
-</span><span class='line'><span class="kd">function</span> <span class="nx">dog_setupcollisions</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="kd">var</span> <span class="nx">listener</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Box2D</span><span class="p">.</span><span class="nx">Dynamics</span><span class="p">.</span><span class="nx">b2ContactListener</span><span class="p">;</span>
-</span><span class='line'>   <span class="nx">listener</span><span class="p">.</span><span class="nx">BeginContact</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">contact</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">//if the dog touch the line we add a flag</span>
-</span><span class='line'>      <span class="c1">//...</span>
-</span><span class='line'>   <span class="nx">listener</span><span class="p">.</span><span class="nx">PreSolve</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">contact</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">//if the dog eats a bone there&#39;s no collision</span>
-</span><span class='line'>      <span class="c1">//...</span>
-</span><span class='line'>   <span class="nx">listener</span><span class="p">.</span><span class="nx">PostSolve</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">contact</span><span class="p">,</span> <span class="nx">impulse</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">//if the dog touch his house</span>
-</span><span class='line'>      <span class="c1">//and sounds...</span>
-</span><span class='line'>      <span class="c1">//...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Main loop</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//...</span>
-</span><span class='line'><span class="kd">function</span> <span class="nx">dog_update</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">dog_update</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">world</span><span class="p">.</span><span class="nx">Step</span><span class="p">(</span>
-</span><span class='line'>      <span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span><span class="p">,</span>   <span class="c1">//frame-rate</span>
-</span><span class='line'>      <span class="mi">10</span><span class="p">,</span>      <span class="c1">//velocity iterations</span>
-</span><span class='line'>      <span class="mi">10</span>      <span class="c1">//position iterations</span>
-</span><span class='line'>  <span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">world</span><span class="p">.</span><span class="nx">ClearForces</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">canvas_draw</span><span class="p">();</span> <span class="c1">//graphics</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">//...</span>
-</span><span class='line'><span class="kd">function</span> <span class="nx">canvas_draw</span><span class="p">()</span>
-</span><span class='line'><span class="c1">//...</span>
-</span><span class='line'><span class="c1">//we iterate through all the bodies</span>
-</span><span class='line'><span class="k">for</span><span class="p">(</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">world</span><span class="p">.</span><span class="nx">GetBodyList</span><span class="p">();</span> <span class="nx">body</span><span class="p">;</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">GetNext</span><span class="p">())</span> <span class="p">{</span>
-</span><span class='line'>   <span class="c1">//...</span>
-</span><span class='line'>   <span class="c1">//we use the User Data field to know what to draw</span>
-</span><span class='line'>  <span class="k">switch</span><span class="p">(</span><span class="nx">body</span><span class="p">.</span><span class="nx">GetUserData</span><span class="p">())</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">case</span> <span class="s1">&#39;line&#39;</span><span class="o">:</span>
-</span><span class='line'><span class="c1">//...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I used <strong><a href="http://code.google.com/p/box2dweb">Box2DWeb</a></strong>, a javascript port of box2d 2.1. It lacks features like rope joint but I realized it too late&hellip;
-More up to date ports i didn&rsquo;t try : </p>
-
-<ul>
-<li><a href="http://code.google.com/p/box2d-html5">Box2D-HTML5</a></li>
-<li><a href="https://github.com/kripken/box2d.js">Kripken&rsquo;s Box2DJS</a></li>
-</ul>
-
-
-<p>Have fun!</p>
-
-<p><em>Good tutorials : <a href="http://blog.sethladd.com/search/label/box2d">Seth Ladd&rsquo;s blog</a></em></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/12/17/jmeter-http-tips-and-examples/">JMeter HTTP tips and examples</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-17T16:00:00+01:00" pubdate data-updated="true">Dec 17<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Load all resources attached to a html file</h2>
-
-<p><img src="/images/jmeter/http-request.png" alt="alt text" /></p>
-
-<p>Useful when working with frames to avoid one http request per frame (I use this a lot when scripting for PeopleSoft ERP).</p>
-
-<h2>Extract a value to a variable with a regular expression</h2>
-
-<p><img src="/images/jmeter/regex1.png" alt="alt text" /></p>
-
-<p>You can use a Debug Listener to adjust the regexp.
-In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo; because the value to be extracted is in a frame.</p>
-
-<h2>Test a variable</h2>
-
-<p><img src="/images/jmeter/if-test.png" alt="alt text" /></p>
-
-<p>In this example I verify that the Regular Expression hereabove worked.</p>
-
-<h2>Javascript in parameters (e.g. to randomize a choice)</h2>
-
-<p><em>First we get the number of values :</em></p>
-
-<p><img src="/images/jmeter/random-1.png" alt="alt text" /></p>
-
-<p><em>Then we replace the parameter with our javascript :</em></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">$</span><span class="p">{</span><span class="nx">VALUES_COUNT</span><span class="p">}</span> <span class="p">)</span> <span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><em>In JMeter it becomes :</em></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">{</span><span class="nx">__javaScript</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">$</span><span class="p">{</span><span class="nx">NB_Lignes</span> <span class="p">}</span> <span class="p">)</span> <span class="p">)</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="/images/jmeter/random-2.png" title="" alt="alt text" /></p>
-
-<p><em>Note : The double <code>$$</code> is due to variable names in PeopleSoft (<code>AF_PCC_WRK_SELECT_PB$1</code>, <code>AF_PCC_WRK_SELECT_PB$2</code>&hellip;)</em></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/12/17/selenium-webdriver-2-with-python-example/">Selenium Webdriver 2 with Python example</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-17T12:00:00+01:00" pubdate data-updated="true">Dec 17<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
-</span><span class='line'><span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
-</span><span class='line'><span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
-</span><span class='line'><span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">re</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#browser init</span>
-</span><span class='line'><span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#wait template : 3 seconds</span>
-</span><span class='line'><span class="n">wait</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">browser</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#goto google</span>
-</span><span class='line'><span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://www.google.com&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#verify title using python internal assert</span>
-</span><span class='line'><span class="k">assert</span> <span class="s">&#39;Google&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">title</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#type cheese in the search area then submit</span>
-</span><span class='line'><span class="n">elem</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">elem</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">&#39;cheese&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">elem</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#wait until we get the search results</span>
-</span><span class='line'><span class="c">#see http://seleniumhq.org/docs/04_webdriver_advanced.html for details</span>
-</span><span class='line'><span class="n">wait</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span> <span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;cheese&#39;</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">assert</span> <span class="s">&#39;cheese&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">title</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#goto to translate tools</span>
-</span><span class='line'><span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_link_text</span><span class="p">(</span><span class="s">&#39;Plus&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#wait until the menu is displayed (french)</span>
-</span><span class='line'><span class="c">#ExpectedConditions.elementsToBeClickable is not available in python</span>
-</span><span class='line'><span class="c">#instead we can use is_displayed()</span>
-</span><span class='line'><span class="c">#see http://selenium-python.readthedocs.org/en/latest/api.html</span>
-</span><span class='line'><span class="n">wait</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span> <span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">find_element_by_link_text</span><span class="p">(</span><span class="s">&#39;Traduction&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#translate from english to french</span>
-</span><span class='line'><span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_link_text</span><span class="p">(</span><span class="s">&#39;Traduction&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-</span><span class='line'><span class="k">assert</span> <span class="s">&#39;fromage&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_id</span><span class="p">(</span><span class="s">&#39;result_box&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-</span></code></pre></td></tr></table></div></figure>
+    </p>
+  </footer>
+</article>
 
 </div>
-  
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -1743,7 +911,7 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/rombdn">@rombdn</a> on GitHub
@@ -1784,6 +952,7 @@ In this example (PeopleSoft) I checked &ldquo;Main sample and sub-samples&rdquo;
 
   
 </aside>
+
 
     </div>
   </div>
