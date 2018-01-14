@@ -111,9 +111,7 @@
 
 <h2>Build the structure</h2>
 
-<p>Let&rsquo;s start with a new 2D project in Unity 5.</p>
-
-<p>Create a new Game Object called Board for holding the whole dungeon. On this game object create a new Script component called BoardManager. We&rsquo;ll code the dungeon generation logic into it.</p>
+<p>Let&rsquo;s start with a new 2D project in Unity 5. Create a new Game Object called Board for holding the whole dungeon. On this game object create a new Script component called BoardManager. We&rsquo;ll code the dungeon generation logic into it.</p>
 
 <p><img src="/images/unitydungeon/unity-new-project.png" alt="Unity new project" /></p>
 
@@ -215,7 +213,7 @@
 <span class='line-number'>90</span>
 </pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">BoardManager</span> <span class="p">:</span> <span class="n">MonoBehaviour</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">public</span> <span class="kt">int</span> <span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">public</span> <span class="kt">int</span> <span class="n">minLeafSize</span><span class="p">,</span> <span class="n">maxLeafSize</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">public</span> <span class="kt">int</span> <span class="n">minRoomSize</span><span class="p">,</span> <span class="n">maxRoomSize</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">public</span> <span class="k">class</span> <span class="nc">SubDungeon</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">public</span> <span class="n">SubDungeon</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">;</span>
@@ -235,7 +233,7 @@
 </span><span class='line'>      <span class="k">return</span> <span class="n">left</span> <span class="p">==</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">right</span> <span class="p">==</span> <span class="k">null</span><span class="p">;</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">bool</span> <span class="nf">Split</span><span class="p">(</span><span class="kt">int</span> <span class="n">minLeafSize</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxLeafSize</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">bool</span> <span class="nf">Split</span><span class="p">(</span><span class="kt">int</span> <span class="n">minRoomSize</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxRoomSize</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="k">if</span> <span class="p">(!</span><span class="n">IAmLeaf</span><span class="p">())</span> <span class="p">{</span>
 </span><span class='line'>        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
 </span><span class='line'>      <span class="p">}</span>
@@ -252,7 +250,7 @@
 </span><span class='line'>        <span class="n">splitH</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="m">0.0f</span><span class="p">,</span> <span class="m">1.0f</span><span class="p">)</span> <span class="p">&gt;</span> <span class="m">0.5</span><span class="p">;</span>
 </span><span class='line'>      <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Min</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span><span class="p">)</span> <span class="p">/</span> <span class="m">2</span> <span class="p">&lt;</span> <span class="n">minLeafSize</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">Mathf</span><span class="p">.</span><span class="n">Min</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span><span class="p">)</span> <span class="p">/</span> <span class="m">2</span> <span class="p">&lt;</span> <span class="n">minRoomSize</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Sub-dungeon &quot;</span> <span class="p">+</span> <span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot; will be a leaf&quot;</span><span class="p">);</span>
 </span><span class='line'>        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
 </span><span class='line'>      <span class="p">}</span>
@@ -260,14 +258,14 @@
 </span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">splitH</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="c1">// split so that the resulting sub-dungeons widths are not too small</span>
 </span><span class='line'>        <span class="c1">// (since we are splitting horizontally)</span>
-</span><span class='line'>        <span class="kt">int</span> <span class="n">split</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">minLeafSize</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">-</span> <span class="n">minLeafSize</span><span class="p">));</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">split</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">minRoomSize</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">-</span> <span class="n">minRoomSize</span><span class="p">));</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="n">left</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">split</span><span class="p">));</span>
 </span><span class='line'>        <span class="n">right</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span>
 </span><span class='line'>          <span class="k">new</span> <span class="nf">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span> <span class="p">+</span> <span class="n">split</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">-</span> <span class="n">split</span><span class="p">));</span>
 </span><span class='line'>      <span class="p">}</span>
 </span><span class='line'>      <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kt">int</span> <span class="n">split</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">minLeafSize</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">-</span> <span class="n">minLeafSize</span><span class="p">));</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">split</span> <span class="p">=</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span> <span class="p">(</span><span class="n">minRoomSize</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">-</span> <span class="n">minRoomSize</span><span class="p">));</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="n">left</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span><span class="k">new</span> <span class="n">Rect</span> <span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">rect</span><span class="p">.</span><span class="n">height</span><span class="p">));</span>
 </span><span class='line'>        <span class="n">right</span> <span class="p">=</span> <span class="k">new</span> <span class="n">SubDungeon</span> <span class="p">(</span>
@@ -282,11 +280,11 @@
 </span><span class='line'>    <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Splitting sub-dungeon &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot;: &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">);</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">IAmLeaf</span><span class="p">())</span> <span class="p">{</span>
 </span><span class='line'>      <span class="c1">// if the sub-dungeon is too large</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">&gt;</span> <span class="n">maxLeafSize</span>
-</span><span class='line'>        <span class="p">||</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">&gt;</span> <span class="n">maxLeafSize</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">.</span><span class="n">width</span> <span class="p">&gt;</span> <span class="n">maxRoomSize</span>
+</span><span class='line'>        <span class="p">||</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">rect</span><span class="p">.</span><span class="n">height</span> <span class="p">&gt;</span> <span class="n">maxRoomSize</span>
 </span><span class='line'>        <span class="p">||</span> <span class="n">Random</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="m">0.0f</span><span class="p">,</span><span class="m">1.0f</span><span class="p">)</span> <span class="p">&gt;</span> <span class="m">0.25</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">Split</span> <span class="p">(</span><span class="n">minLeafSize</span><span class="p">,</span> <span class="n">maxLeafSize</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">Split</span> <span class="p">(</span><span class="n">minRoomSize</span><span class="p">,</span> <span class="n">maxRoomSize</span><span class="p">))</span> <span class="p">{</span>
 </span><span class='line'>          <span class="n">Debug</span><span class="p">.</span><span class="n">Log</span> <span class="p">(</span><span class="s">&quot;Splitted sub-dungeon &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot; in &quot;</span>
 </span><span class='line'>            <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">left</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot;: &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">left</span><span class="p">.</span><span class="n">rect</span> <span class="p">+</span> <span class="s">&quot;, &quot;</span>
 </span><span class='line'>            <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">right</span><span class="p">.</span><span class="n">debugId</span> <span class="p">+</span> <span class="s">&quot;: &quot;</span> <span class="p">+</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">right</span><span class="p">.</span><span class="n">rect</span><span class="p">);</span>
@@ -390,7 +388,9 @@
 
 <h2>Drawing the rooms &frac12;: add a sprite for the floor</h2>
 
-<p>Instead of relying on console output, it would be more intuitive to start having a visual representation. First thing is to add a sprite for the floor of the rooms. You can grab this one and add it as an asset in your project: <img src="/images/unitydungeon/sprite-floor.png" alt="Room sprite" />. Also be careful to set the <em>Pixels Per Unit</em> to exactly the size of the sprite (16 for this sprite), so that the sprite will cover exactly a square in the board.</p>
+<p>Instead of relying on console output, it would be more intuitive to start having a visual representation. First thing is to add a sprite for the floor of the rooms. You can use this one <img src="/images/unitydungeon/sprite-floor.png" alt="Room sprite" /> and add it as an asset in your project.</p>
+
+<p>Also be careful to set the <em>Pixels Per Unit</em> to exactly the size of the sprite (16 for this sprite), so that the sprite will cover exactly a square in the board.</p>
 
 <p><img src="/images/unitydungeon/unity-sprite-floor.png" alt="Room sprite in Unity" /></p>
 
@@ -415,7 +415,7 @@
 
 <h2>Drawing the rooms 2/2: write the code</h2>
 
-<p>Back in the script we add a method to draw the rooms. Also as we draw the rooms we&rsquo;ll register the drawed squares in a variable representing the board called gridPositions. This variable is not really useful at first but will be really useful when starting to construct a game above this basic structure.</p>
+<p>Back in the script we add a method to draw the rooms. Also as we draw the rooms, we&rsquo;ll register the drawed squares in a variable representing the board called <code>boardPositionsFloor</code>. This variable is not really useful at first but will be essential when starting to construct a game above.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -441,7 +441,7 @@
 <span class='line-number'>22</span>
 </pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">BoardManager</span> <span class="p">:</span> <span class="n">MonoBehaviour</span> <span class="p">{</span>
 </span><span class='line'>  <span class="c1">//...</span>
-</span><span class='line'>  <span class="k">private</span> <span class="n">GameObject</span><span class="p">[,]</span> <span class="n">gridPositions</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">private</span> <span class="n">GameObject</span><span class="p">[,]</span> <span class="n">boardPositionsFloor</span><span class="p">;</span>
 </span><span class='line'>  <span class="c1">//...</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">public</span> <span class="k">void</span> <span class="nf">DrawRooms</span><span class="p">(</span><span class="n">SubDungeon</span> <span class="n">subDungeon</span><span class="p">)</span> <span class="p">{</span>
@@ -453,7 +453,7 @@
 </span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">subDungeon</span><span class="p">.</span><span class="n">room</span><span class="p">.</span><span class="n">y</span><span class="p">;</span> <span class="n">j</span> <span class="p">&lt;</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">room</span><span class="p">.</span><span class="n">yMax</span><span class="p">;</span> <span class="n">j</span><span class="p">++)</span> <span class="p">{</span>
 </span><span class='line'>          <span class="n">GameObject</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">Instantiate</span> <span class="p">(</span><span class="n">floorTile</span><span class="p">,</span> <span class="k">new</span> <span class="n">Vector3</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="m">0f</span><span class="p">),</span> <span class="n">Quaternion</span><span class="p">.</span><span class="n">identity</span><span class="p">)</span> <span class="k">as</span> <span class="n">GameObject</span><span class="p">;</span>
 </span><span class='line'>          <span class="n">instance</span><span class="p">.</span><span class="n">transform</span><span class="p">.</span><span class="n">SetParent</span> <span class="p">(</span><span class="n">transform</span><span class="p">);</span>
-</span><span class='line'>          <span class="n">gridPositions</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'>          <span class="n">boardPositionsFloor</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>      <span class="p">}</span>
 </span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -464,7 +464,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>And in the Start() method initialize gridPositions and call DrawRooms on the root:</p>
+<p>And in the Start() method initialize boardPositionsFloor and call DrawRooms on the root:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -475,7 +475,7 @@
 </pre></td><td class='code'><pre><code class='csharp'><span class='line'>  <span class="k">void</span> <span class="nf">Start</span> <span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>    <span class="c1">//...</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">gridPositions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GameObject</span><span class="p">[</span><span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">boardPositionsFloor</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GameObject</span><span class="p">[</span><span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">];</span>
 </span><span class='line'>    <span class="n">DrawRooms</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -485,13 +485,13 @@
 
 <p><img src="/images/unitydungeon/unity-rooms-drawed.png" alt="Rooms drawed" /></p>
 
-<p>Now that we have a visual feedback it&rsquo;s also easier to play with the parameters :</p>
+<p>Now that we have a visual feedback, it&rsquo;s also easier to play with the parameters :</p>
 
 <p><img src="/images/unitydungeon/unity-rooms-drawed-big.png" alt="Rooms drawed big" /></p>
 
 <h2>Connect the rooms: create corridors between rooms</h2>
 
-<p>Isolated rooms are not very useful so we&rsquo;ll add corridors between them. To do so, we&rsquo;ll connect each leaf to its sibling. Then going up one level in the tree, we&rsquo;ll repeat the process to connect parents sub-dungeons, until finally we connect the two initial sub-dungeons (see the stackexchange answer for illustrations).</p>
+<p>Isolated rooms are not very useful, so we&rsquo;ll add corridors between them. To do so, we&rsquo;ll connect each leaf to its sibling. Then going up one level in the tree, we&rsquo;ll repeat the process to connect parents sub-dungeons, until finally we connect the two initial sub-dungeons (see the stackexchange answer for illustrations).</p>
 
 <p>Add <code>using System.Collections.Generic;</code> at the beginning of the script, then in the SubDungeon class add:</p>
 
@@ -758,10 +758,10 @@
 </span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="n">Rect</span> <span class="n">corridor</span> <span class="k">in</span> <span class="n">subDungeon</span><span class="p">.</span><span class="n">corridors</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">corridor</span><span class="p">.</span><span class="n">x</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">corridor</span><span class="p">.</span><span class="n">xMax</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">corridor</span><span class="p">.</span><span class="n">y</span><span class="p">;</span> <span class="n">j</span> <span class="p">&lt;</span> <span class="n">corridor</span><span class="p">.</span><span class="n">yMax</span><span class="p">;</span> <span class="n">j</span><span class="p">++)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">gridPositions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">boardPositionsFloor</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="n">GameObject</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">Instantiate</span> <span class="p">(</span><span class="n">corridorTile</span><span class="p">,</span> <span class="k">new</span> <span class="n">Vector3</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="m">0f</span><span class="p">),</span> <span class="n">Quaternion</span><span class="p">.</span><span class="n">identity</span><span class="p">)</span> <span class="k">as</span> <span class="n">GameObject</span><span class="p">;</span>
 </span><span class='line'>            <span class="n">instance</span><span class="p">.</span><span class="n">transform</span><span class="p">.</span><span class="n">SetParent</span> <span class="p">(</span><span class="n">transform</span><span class="p">);</span>
-</span><span class='line'>            <span class="n">gridPositions</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">boardPositionsFloor</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="n">instance</span><span class="p">;</span>
 </span><span class='line'>          <span class="p">}</span>
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>      <span class="p">}</span>
@@ -786,7 +786,7 @@
 </span><span class='line'>    <span class="n">CreateBSP</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
 </span><span class='line'>    <span class="n">rootSubDungeon</span><span class="p">.</span><span class="n">CreateRoom</span> <span class="p">();</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">gridPositions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GameObject</span><span class="p">[</span><span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">boardPositionsFloor</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GameObject</span><span class="p">[</span><span class="n">boardRows</span><span class="p">,</span> <span class="n">boardColumns</span><span class="p">];</span>
 </span><span class='line'>    <span class="n">DrawCorridors</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
 </span><span class='line'>    <span class="n">DrawRooms</span> <span class="p">(</span><span class="n">rootSubDungeon</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">}</span>
